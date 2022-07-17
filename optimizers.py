@@ -282,12 +282,11 @@ def get_clipped_grad_desc_step(**kwargs):
         return LinearStochAutoClip(**kwargs)
     if kwargs['clipping_type'] == 'quadratic_stoch_autoclip':
         return QuadraticStochAutoClip(**kwargs)
-    elif kwargs['clipping_type'] == 'linear_stoch_norm':
+    if kwargs['clipping_type'] == 'linear_stoch_norm':
         return LinearStochNormClip(**kwargs)
-    elif kwargs['clipping_type'] == 'quadratic_stoch_norm':
+    if kwargs['clipping_type'] == 'quadratic_stoch_norm':
         return QuadraticStochNormClip(**kwargs)
-    else:
-        raise TypeError(f'No clipping type called {kwargs["clipping_type"]}')
+    raise TypeError(f'No clipping type called {kwargs["clipping_type"]}')
 
 
 class _RequiredParameter(object):
