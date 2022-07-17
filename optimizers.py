@@ -305,7 +305,7 @@ class _DependingParameter:
         return f"<depends on {self.other_parameter_name}>"
 
 
-depending = _DependingParameter()
+depending = _DependingParameter('clipping_type')
 
 
 class ClippedSGD(Optimizer):
@@ -342,12 +342,12 @@ class ClippedSGD(Optimizer):
             l_r=required,
             momentum=0,
             clipping_type='no_clip',
-            clipping_level=_DependingParameter('clipping_type'),
+            clipping_level=depending,
             beta=0,
             **kwargs
     ):
         if l_r is not required and l_r < 0.0:
-            raise ValueError("Invalid learning rate: {}".format(l_r))
+            raise ValueError(f"Invalid learning rate: {l_r}")
         type_to_default_level = {
             'no_clip': 0.0,
             'norm': 1.0,
@@ -360,11 +360,11 @@ class ClippedSGD(Optimizer):
             'quadratic_stoch_autoclip': 1.0
         }
         if clipping_type not in type_to_default_level:
-            raise ValueError("Invalid clipping type: {}, possible types are {}".
-                             format(l_r, list(type_to_default_level.keys())))
-        if not isinstance(clipping_level, depending) and clipping_level < 0.0:
-            raise ValueError("Invalid clipping level: {}".format(clipping_level))
-        if isinstance(clipping_level, depending):
+            raise ValueError(f"Invalid clipping type: {l_r}, "
+                             f"possible types are {list(type_to_default_level.keys())}")
+        if not isinstance(clipping_level, _DependingParameter) and clipping_level < 0.0:
+            raise ValueError(f"Invalid clipping level: {clipping_level}")
+        if isinstance(clipping_level, _DependingParameter):
             clipping_level = type_to_default_level[clipping_type]
         defaults = dict(
             l_r=l_r,
@@ -377,10 +377,10 @@ class ClippedSGD(Optimizer):
         kwargs['beta'] = beta
 
         self.grad_desc_step = get_clipped_grad_desc_step(**kwargs)
-        super(ClippedSGD, self).__init__(params, defaults)
+        super().__init__(params, defaults)
 
     def __setstate__(self, state):
-        super(ClippedSGD, self).__setstate__(state)
+        super().__setstate__(state)
 
     @torch.no_grad()  # sets all requires_grad flags to False
     def step(self, closure=None):
@@ -477,7 +477,7 @@ class ClippedSSTM(Optimizer):
             l_r=required,
             L=required,
             clipping_type='no_clip',
-            clipping_level=_DependingParameter('clipping_type'),
+            clipping_level=depending,
             beta=0,
             nu=1,
             a_k_ratio_upper_bound=1.0,
@@ -485,9 +485,9 @@ class ClippedSSTM(Optimizer):
             **kwargs
     ):
         if l_r is not required and l_r <= 0.0:
-            raise ValueError("Invalid learning rate: {}".format(l_r))
+            raise ValueError(f"Invalid learning rate: {l_r}")
         if L is not required and L < 0.0:
-            raise ValueError("Invalid Lipschitz constant: {}".format(l_r))
+            raise ValueError(f"Invalid Lipschitz constant: {L}")
 
         type_to_default_level = {
             'no_clip': 0.0,
@@ -502,19 +502,20 @@ class ClippedSSTM(Optimizer):
         }
 
         if clipping_type not in type_to_default_level:
-            raise ValueError("Invalid clipping type: {}, possible types are {}".
-                             format(clipping_type, list(type_to_default_level.keys())))
-        if not isinstance(clipping_level, depending) and clipping_level < 0.0:
-            raise ValueError("Invalid clipping level: {}".format(clipping_level))
-        if isinstance(clipping_level, depending):
+            raise ValueError(f"Invalid clipping type: {clipping_type},"
+                             f"possible types are {list(type_to_default_level.keys())}")
+        if not isinstance(clipping_level, _DependingParameter) and clipping_level < 0.0:
+            raise ValueError(f"Invalid clipping level: {clipping_level}")
+        if isinstance(clipping_level, _DependingParameter):
             clipping_level = type_to_default_level[clipping_type]
         if nu < 0.0 or nu > 1.0:
-            raise ValueError("Invalid nu: {}".format(nu))
+            raise ValueError(f"Invalid nu: {nu}")
         if a_k_ratio_upper_bound <= 0.0 or a_k_ratio_upper_bound > 1.0:
-            raise ValueError("Invalid a_k_ratio_upper_bound: {}".format(a_k_ratio_upper_bound))
+            raise ValueError(f"Invalid a_k_ratio_upper_bound: {a_k_ratio_upper_bound}")
         if clipping_iter_start is not None:
             if not isinstance(clipping_iter_start, int) or clipping_iter_start <= 0:
-                raise ValueError("Invalid clipping_iter_start: {}, should be positive integer")
+                raise ValueError(f"Invalid clipping_iter_start: "
+                                 f"{clipping_iter_start}, should be positive integer")
             if nu > 0 and clipping_type == 'norm':
                 a = 1 / l_r
                 # clipping_level / ( 1 / (2 * a * L) * (k + 1) ** (2 * nu / (1 + nu))) = 1
@@ -528,7 +529,7 @@ class ClippedSSTM(Optimizer):
             l_r=l_r, L=L,
             clipping_type=clipping_type, clipping_level=clipping_level,
             nu=nu, a_k_ratio_upper_bound=a_k_ratio_upper_bound,
-            state=dict()
+            state={}
         )
 
         kwargs['clipping_type'] = clipping_type
@@ -536,10 +537,10 @@ class ClippedSSTM(Optimizer):
         kwargs['beta'] = beta
 
         self.grad_desc_step = get_clipped_grad_desc_step(**kwargs)
-        super(ClippedSSTM, self).__init__(params, defaults)
+        super().__init__(params, defaults)
 
     def __setstate__(self, state):
-        super(ClippedSSTM, self).__setstate__(state)
+        super().__setstate__(state)
 
     @torch.no_grad()  # sets all requires_grad flags to False
     def step(self, closure=None):
@@ -706,9 +707,9 @@ def get_optimal_L(model, optimizer, criterion, train_loader, epochs=1):
             if all([len(g2), len(g1), len(x2), len(x1)]):
                 G = 0.0
                 X = 0.0
-                for i in range(len(g2)):
-                    G += (g2[i] - g1[i]).norm() ** 2
-                    X += (x2[i] - x1[i]).norm() ** 2
+                for g_cur, g_prev, x_cur, x_prev in zip(g2, g1, x2, x1):
+                    G += (g_cur - g_prev).norm() ** 2
+                    X += (x_cur - x_prev).norm() ** 2
                 G **= 0.5
                 X **= 0.5
                 L = G / X
