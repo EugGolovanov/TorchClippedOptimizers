@@ -75,7 +75,7 @@ class NoClip:
                  params: List[Tensor],
                  d_p_list: List[Tensor],
                  momentum_buffer_list: List[Optional[Tensor]],
-                 lr: float,
+                 l_r: float,
                  momentum: float,
                  clipping_type: str,
                  clipping_level: float):
@@ -104,9 +104,9 @@ class NoClip:
             alpha = self.get_alpha(d_p=d_p, grad_norm=grad_norm, clipping_level=clipping_level,
                                    beta=self.kwargs['beta'])
             if clipping_type == 'coordinate_wise':
-                param.add_(-lr * alpha * d_p)
+                param.add_(-l_r * alpha * d_p)
             else:
-                param.add_(d_p, alpha=-lr * alpha)
+                param.add_(d_p, alpha=-l_r * alpha)
 
 
 class NormClip(NoClip):
@@ -318,7 +318,7 @@ class ClippedSGD(Optimizer):
     Args:
         params (iterable): iterable of parameters to optimize or dicts defining
             parameter groups
-        lr (float): learning rate
+        l_r (float): learning rate
         clipping_type (string, optional):
         type of clipping to use: 'norm'|'layer_wise'|'coordinate_wise'.
             'no_clip': no clipping, standart sgd;
@@ -335,7 +335,7 @@ class ClippedSGD(Optimizer):
             for clipping_type='layer_wise' default clipping_level=1
             for clipping_type='coordinate_wise' default clipping_level=0.1
     Example:
-        >>> optimizer = torch.optim.ClippedSGD(model.parameters(), lr=0.01,
+        >>> optimizer = torch.optim.ClippedSGD(model.parameters(), l_r=0.01,
                                                 clipping_type='layer_wise', clipping_level=10)
         >>> optimizer.zero_grad()
         >>> loss_fn(model(input), target).backward()
@@ -344,15 +344,15 @@ class ClippedSGD(Optimizer):
 
     def __init__(
             self, params,
-            lr=required,
+            l_r=required,
             momentum=0,
             clipping_type='no_clip',
             clipping_level=depending('clipping_type'),
             beta=0,
             **kwargs
     ):
-        if lr is not required and lr < 0.0:
-            raise ValueError("Invalid learning rate: {}".format(lr))
+        if l_r is not required and l_r < 0.0:
+            raise ValueError("Invalid learning rate: {}".format(l_r))
         type_to_default_level = {
             'no_clip': 0.0,
             'norm': 1.0,
@@ -366,13 +366,13 @@ class ClippedSGD(Optimizer):
         }
         if clipping_type not in type_to_default_level:
             raise ValueError("Invalid clipping type: {}, possible types are {}".
-                             format(lr, list(type_to_default_level.keys())))
+                             format(l_r, list(type_to_default_level.keys())))
         if not isinstance(clipping_level, depending) and clipping_level < 0.0:
             raise ValueError("Invalid clipping level: {}".format(clipping_level))
         if isinstance(clipping_level, depending):
             clipping_level = type_to_default_level[clipping_type]
         defaults = dict(
-            lr=lr,
+            l_r=l_r,
             momentum=momentum,
             clipping_type=clipping_type, clipping_level=clipping_level
         )
@@ -403,7 +403,7 @@ class ClippedSGD(Optimizer):
             params_with_grad = []
             d_p_list = []
             momentum_buffer_list = []
-            lr = group['lr']
+            l_r = group['l_r']
             momentum = group['momentum']
             clipping_type = group['clipping_type']
             clipping_level = group['clipping_level']
@@ -424,7 +424,7 @@ class ClippedSGD(Optimizer):
                 params_with_grad,
                 d_p_list,
                 momentum_buffer_list,
-                lr,
+                l_r,
                 momentum,
                 clipping_type,
                 clipping_level
@@ -443,7 +443,7 @@ class ClippedSSTM(Optimizer):
     Args:
         params (iterable): iterable of parameters to optimize or dicts defining
             parameter groups
-        lr (float): learning rate (stepsize parameter an in paper, inverse to real lr)
+        l_r (float): learning rate (stepsize parameter an in paper, inverse to real l_r)
         L (float): Lipschitz constant
         clipping_type (string, optional):
         type of clipping to use: 'norm'|'layer_wise'|'coordinate_wise'.
@@ -470,7 +470,7 @@ class ClippedSSTM(Optimizer):
         clipping_level will be chosen to ensure that clipping starts at this iteration of method
         (we can find clipping_level B from B / (k^{2\nu/(1+\nu)}\alpha_0) = 1 when \nu > 0)
     Example:
-        >>> optimizer = ClippedSSTM(model.parameters(), lr=0.01, L=10,
+        >>> optimizer = ClippedSSTM(model.parameters(), l_r=0.01, L=10,
                                      clipping_type='norm', clipping_level=10)
         >>> optimizer.zero_grad()
         >>> loss_fn(model(input), target).backward()
@@ -479,7 +479,7 @@ class ClippedSSTM(Optimizer):
 
     def __init__(
             self, params,
-            lr=required,
+            l_r=required,
             L=required,
             clipping_type='no_clip',
             clipping_level=depending('clipping_type'),
@@ -489,10 +489,10 @@ class ClippedSSTM(Optimizer):
             clipping_iter_start=None,
             **kwargs
     ):
-        if lr is not required and lr <= 0.0:
-            raise ValueError("Invalid learning rate: {}".format(lr))
+        if l_r is not required and l_r <= 0.0:
+            raise ValueError("Invalid learning rate: {}".format(l_r))
         if L is not required and L < 0.0:
-            raise ValueError("Invalid Lipschitz constant: {}".format(lr))
+            raise ValueError("Invalid Lipschitz constant: {}".format(l_r))
 
         type_to_default_level = {
             'no_clip': 0.0,
@@ -521,16 +521,16 @@ class ClippedSSTM(Optimizer):
             if not isinstance(clipping_iter_start, int) or clipping_iter_start <= 0:
                 raise ValueError("Invalid clipping_iter_start: {}, should be positive integer")
             if nu > 0 and clipping_type == 'norm':
-                a = 1 / lr
+                a = 1 / l_r
                 # clipping_level / ( 1 / (2 * a * L) * (k + 1) ** (2 * nu / (1 + nu))) = 1
                 clipping_level = 1 / (2 * a * L) * (clipping_iter_start + 1) ** (2 * nu / (1 + nu))
                 # print(clipping_level)
             elif nu < 1e-4:
-                a = 1 / lr
+                a = 1 / l_r
                 clipping_level = clipping_level / (2 * a * L)
 
         defaults = dict(
-            lr=lr, L=L,
+            l_r=l_r, L=L,
             clipping_type=clipping_type, clipping_level=clipping_level,
             nu=nu, a_k_ratio_upper_bound=a_k_ratio_upper_bound,
             state=dict()
@@ -564,7 +564,7 @@ class ClippedSSTM(Optimizer):
         for group in self.param_groups:
             d_p_list = []
             L = group['L']
-            a = 1 / group['lr']
+            a = 1 / group['l_r']
             clipping_type = group['clipping_type']
             clipping_level = group['clipping_level']
             nu = group["nu"]
@@ -697,7 +697,7 @@ def get_optimal_L(model, optimizer, criterion, train_loader, epochs=1):
     x1 = []
     L_history = []
 
-    for epoch in range(epochs):
+    for _ in range(epochs):
         for data in tqdm(train_loader):
             inputs, labels = data[0].to(device), data[1].to(device)
 
