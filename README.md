@@ -4,6 +4,16 @@
 
 
 ------------
+
+### Installation
+you can install our library using pip:  
+`pip install torch-clip`  
+
+
+### What do you need us for?
+In the last few years, for various neural network training models (for example, BERT + CoLA), it has been found that in the case of "large stochastic gradients", it is advantageous to use special clipping (clipping/normalization) of the patched gradient. Since all modern machine learning, one way or another, ultimately boils down to stochastic optimization problems, the question of exactly how to "clip" large values of patched gradients plays a key role in the development of effective numerical training methods for a large class of models. This repository implements optimizers for the pytorch library with different clipping methods.
+
+
 ### our clipping methods
 
 + [Linear Stoch Norm Clipping](#LinearStochNormClip);  
@@ -15,15 +25,7 @@
 + [Quadratic Stoch Auto Clipping](#QuadraticStochAutoClip).
 
 
-
-### Installation
-you can install our library using pip:  
-`pip install torch-clip`  
-
-
-### What do you need us for?
-In the last few years, for various neural network training models (for example, BERT + CoLA), it has been found that in the case of "large stochastic gradients", it is advantageous to use special clipping (clipping/normalization) of the patched gradient. Since all modern machine learning, one way or another, ultimately boils down to stochastic optimization problems, the question of exactly how to "clip" large values of patched gradients plays a key role in the development of effective numerical training methods for a large class of models. This repository implements optimizers for the pytorch library with different clipping methods.  
-
+### Comparison on different tasks
 
 
 ##### <a name="LinearStochNormClip"></a>	Linear Stoch Norm Clipping
