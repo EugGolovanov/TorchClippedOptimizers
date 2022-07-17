@@ -43,8 +43,12 @@ Graph-Node classifcation on Reddit node dataset and custom GraphConv model:
 
 ##### <a name="LinearStochNormClip"></a>	Linear Stoch Norm Clipping
 about this clipping methods  
-![formula](https://render.githubusercontent.com/render/math?math=e^{i \pi} = -1)
+
+[//]: # (<img src="https://render.githubusercontent.com/render/math?math=MAE = \frac{1}{n} \sum_{j=1}^{n} \left | y_{j} - \hat{y}_{j} + \right |">)
+$$ x = {-b \pm \sqrt{b^2-4ac} \over 2a} $$
+
 -----------
+
 
 ##### <a name="QuadraticStochNormClip"></a>	Quadratic Stoch Norm Clipping
 about this clipping methods  
