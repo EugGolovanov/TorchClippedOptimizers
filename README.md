@@ -31,9 +31,9 @@ In the last few years, for various neural network training models (for example, 
 ### Comparison on different tasks
 We conducted a study to study the quality of our clipping methods on a number of tasks: image classification, semantic segmentation, text classification and graph-node classification.  
 Image Classification on ImageNet dataset and Resnet18 model:  
-![This is an image](readme_images/image-classification.jpg) 
+![This is an image](readme_images/image-classification.png) 
 Semantic Segmentation on PascalVOC dataset and Unet model:  
-![This is an image](readme_images/semnatic-segmentation.jpg) 
+![This is an image](readme_images/semnatic-segmentation.png) 
 Text Classification on CoLA dataset and Bert model:  
 ![This is an image](readme_images/text-classification.jpg) 
 Graph-Node classifcation on Reddit node dataset and custom GraphConv model:  
