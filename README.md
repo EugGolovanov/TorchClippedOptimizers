@@ -2,8 +2,7 @@
 
 `torch-clip` a library to improve optimization methods by clipping off heavy-tailed gradient. This makes it possible to increase the accuracy and speed of convergence during the training of neural networks on a specific number of tasks.
 
-###*Example of the distribution of gradient lengths with heavy tails:*
-
+**Example of the distribution of gradient lengths with heavy tails:**
 ![This is an image](readme_images/heavy_tail.jpg)
 ------------
 
