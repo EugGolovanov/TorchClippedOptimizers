@@ -1,6 +1,6 @@
-# TorchClippedOptimizers
+# TorchClippedOptimizers  
 
-to improve optimization methods by clipping off heavy-tailed gradient. This makes it possible to increase the accuracy and speed of convergence during the training of neural networks on a specific number of tasks
+`torch-clip` a library to improve optimization methods by clipping off heavy-tailed gradient. This makes it possible to increase the accuracy and speed of convergence during the training of neural networks on a specific number of tasks
 ------------
 ## our clipping methods  
 
