@@ -270,17 +270,17 @@ def get_clipped_grad_desc_step(**kwargs):
     """
     if kwargs['clipping_type'] == 'no_clip':
         return NoClip(**kwargs)
-    elif kwargs['clipping_type'] == 'norm':
+    if kwargs['clipping_type'] == 'norm':
         return NormClip(**kwargs)
-    elif kwargs['clipping_type'] == 'layer_wise':
+    if kwargs['clipping_type'] == 'layer_wise':
         return LayerWiseClip(**kwargs)
-    elif kwargs['clipping_type'] == 'coordinate_wise':
+    if kwargs['clipping_type'] == 'coordinate_wise':
         return CoordWiseClip(**kwargs)
-    elif kwargs['clipping_type'] == 'auto_clip':
+    if kwargs['clipping_type'] == 'auto_clip':
         return AutoClip(**kwargs)
-    elif kwargs['clipping_type'] == 'linear_stoch_autoclip':
+    if kwargs['clipping_type'] == 'linear_stoch_autoclip':
         return LinearStochAutoClip(**kwargs)
-    elif kwargs['clipping_type'] == 'quadratic_stoch_autoclip':
+    if kwargs['clipping_type'] == 'quadratic_stoch_autoclip':
         return QuadraticStochAutoClip(**kwargs)
     elif kwargs['clipping_type'] == 'linear_stoch_norm':
         return LinearStochNormClip(**kwargs)
