@@ -43,7 +43,7 @@ Graph-Node classifcation on Reddit node dataset and custom GraphConv model:
 
 ##### <a name="LinearStochNormClip"></a>	Linear Stoch Norm Clipping
 about this clipping methods  
-$$    \alpha_{norm} = {\frac{\eta}{||\nabla f(x^k, \xi^k)||_2} } $$
+$$\alpha_{norm} = {\frac{\eta}{||\nabla f(x^k, \xi^k)||_2}}$$
 
 -----------
 
