@@ -143,8 +143,7 @@ class LinearStochNormClip(NoClip):
         clip = random.choices([True, False], weights=[prob, 1 - prob])[0]
         if not clip or clipping_level > grad_norm:
             return 1
-        else:
-            return min(1, clipping_level / grad_norm)
+        return min(1, clipping_level / grad_norm)
 
 
 class QuadraticStochNormClip(NoClip):
@@ -165,8 +164,7 @@ class QuadraticStochNormClip(NoClip):
         clip = random.choices([True, False], weights=[prob, 1 - prob])[0]
         if not clip or clipping_level > grad_norm:
             return 1
-        else:
-            return min(1, clipping_level / grad_norm)
+        return min(1, clipping_level / grad_norm)
 
 
 class LayerWiseClip(NoClip):
@@ -238,8 +236,7 @@ class LinearStochAutoClip(NoClip):
         clip = random.choices([True, False], weights=[prob, 1 - prob])[0]
         if not clip or grad_norm_p > grad_norm:
             return 1
-        else:
-            return min(1, grad_norm_p / grad_norm)
+        return min(1, grad_norm_p / grad_norm)
 
 
 class QuadraticStochAutoClip(NoClip):
@@ -260,8 +257,7 @@ class QuadraticStochAutoClip(NoClip):
         clip = random.choices([True, False], weights=[prob, 1 - prob])[0]
         if not clip or grad_norm_p > grad_norm:
             return 1
-        else:
-            return min(1, grad_norm_p / grad_norm)
+        return min(1, grad_norm_p / grad_norm)
 
 
 def get_clipped_grad_desc_step(**kwargs):
@@ -289,7 +285,7 @@ def get_clipped_grad_desc_step(**kwargs):
     raise TypeError(f'No clipping type called {kwargs["clipping_type"]}')
 
 
-class _RequiredParameter(object):
+class _RequiredParameter:
     """Singleton class representing a required parameter for an Optimizer."""
 
     def __repr__(self):
@@ -299,17 +295,17 @@ class _RequiredParameter(object):
 required = _RequiredParameter()
 
 
-class _DependingParameter(object):
+class _DependingParameter:
     """Singleton class representing a parameter that depends on other for an Optimizer."""
 
     def __init__(self, other_parameter_name):
         self.other_parameter_name = other_parameter_name
 
     def __repr__(self):
-        return "<depends on {}>".format(self.other_parameter_name)
+        return f"<depends on {self.other_parameter_name}>"
 
 
-depending = _DependingParameter
+depending = _DependingParameter()
 
 
 class ClippedSGD(Optimizer):
@@ -346,7 +342,7 @@ class ClippedSGD(Optimizer):
             l_r=required,
             momentum=0,
             clipping_type='no_clip',
-            clipping_level=depending('clipping_type'),
+            clipping_level=_DependingParameter('clipping_type'),
             beta=0,
             **kwargs
     ):
@@ -481,7 +477,7 @@ class ClippedSSTM(Optimizer):
             l_r=required,
             L=required,
             clipping_type='no_clip',
-            clipping_level=depending('clipping_type'),
+            clipping_level=_DependingParameter('clipping_type'),
             beta=0,
             nu=1,
             a_k_ratio_upper_bound=1.0,
