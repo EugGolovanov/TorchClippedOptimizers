@@ -13,3 +13,31 @@
 + [Auto Clipping](#AutoClip);  
 + [Linear Stoch Auto Clipping](#LinearStochAutoClip);  
 + [Quadratic Stoch Auto Clipping](#QuadraticStochAutoClip).
+
+
+###### <a name="LinearStochNormClip"></a>	Linear Stoch Norm Clipping
+about this clipping methods  
+
+
+###### <a name="QuadraticStochNormClip"></a>	Quadratic Stoch Norm Clipping
+about this clipping methods  
+
+
+###### <a name="LayerWiseClip"></a>	Layer Wise Clipping
+about this clipping methods  
+
+
+###### <a name="CoordWiseClip"></a>	Coordinate Wise Clipping
+about this clipping methods  
+
+
+###### <a name="AutoClip"></a>	Auto Clipping
+about this clipping methods  
+
+
+###### <a name="LinearStochAutoClip"></a>	Linear Stoch Auto Clipping
+about this clipping methods  
+
+
+###### <a name="QuadraticStochAutoClip"></a>	Quadratic Stoch Auto Clipping
+about this clipping methods  
