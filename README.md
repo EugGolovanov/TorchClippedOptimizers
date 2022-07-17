@@ -1,9 +1,9 @@
 # TorchClippedOptimizers
 
-`torch-clip` a library to improve optimization methods by clipping off heavy-tailed gradient. This makes it possible to increase the accuracy and speed of convergence during the training of neural networks on a specific number of tasks.
 
-**Example of the distribution of gradient lengths with heavy tails:**
+#### `torch-clip` a library to improve optimization methods by clipping off heavy-tailed gradient. This makes it possible to increase the accuracy and speed of convergence during the training of neural networks on a specific number of tasks.
 
+<br>*Example of the distribution of gradient lengths with heavy tails:*
 ![This is an image](readme_images/heavy_tail.jpg)
 ------------
 
@@ -28,6 +28,16 @@ In the last few years, for various neural network training models (for example, 
 
 
 ### Comparison on different tasks
+We conducted a study to study the quality of our clipping methods on a number of tasks: image classification, semantic segmentation, text classification and graph-node classification.  
+Image Classification on ImageNet dataset and Resnet18 model:  
+*graphic*  
+Semantic Segmentation on PascalVOC dataset and Unet model:  
+*graphic*  
+Text Classification on CoLA dataset and Bert model:  
+*graphic*  
+Graph-Node classifcation on Reddit node dataset and custom GraphConv model:  
+*graphic*  
+
 
 
 ##### <a name="LinearStochNormClip"></a>	Linear Stoch Norm Clipping
