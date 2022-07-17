@@ -19,6 +19,7 @@ In the last few years, for various neural network training models (for example, 
 
 ### our clipping methods
 
++ [Norm Clipping](#NormClip)
 + [Linear Stoch Norm Clipping](#LinearStochNormClip);  
 + [Quadratic Stoch Norm Clipping](#QuadraticStochNormClip);  
 + [Layer Wise Clipping](#LayerWiseClip);  
@@ -40,14 +41,15 @@ Graph-Node classifcation on Reddit node dataset and custom GraphConv model:
 ![This is an image](readme_images/graph-node-classification.jpg) 
 
 
-
-##### <a name="LinearStochNormClip"></a>	Linear Stoch Norm Clipping
+##### <a name="NormClip"></a> Norm Clipping
 about this clipping methods
-$$
-\text{Linear Random Norm Clip:}\\ P(\text{clip})=\beta^{\alpha_{\text{norm}}}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{norm}}
-$$
+$$\alpha_{norm} = {\frac{\eta}{||\nabla f(x^k, \xi^k)||_2}}$$
 -----------
 
+##### <a name="LinearStochNormClip"></a> Linear Stoch Norm Clipping
+about this clipping methods
+$$\text{Linear Random Norm Clip:}\\ P(\text{clip})=\beta^{\alpha_{\text{norm}}}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{norm}}$$
+-----------
 
 ##### <a name="QuadraticStochNormClip"></a>	Quadratic Stoch Norm Clipping
 about this clipping methods  
@@ -56,36 +58,26 @@ about this clipping methods
 
 ##### <a name="LayerWiseClip"></a>	Layer Wise Clipping
 about this clipping methods  
-$$
-\text{Layer-wise Clip:}\\ \alpha_{layer} = \frac{\eta}{||\nabla_{w_{layer}}f(x^k, \xi^k)||_2},\text{where}\ w_{layer} - \text{weights of current layer of neural network}\
-$$
+$$text{Layer-wise Clip:}\\ \alpha_{layer} = \frac{\eta}{||\nabla_{w_{layer}}f(x^k, \xi^k)||_2},\text{where}\ w_{layer} - \text{weights of current layer of neural network}$$
 -----------
 
 ##### <a name="CoordWiseClip"></a>	Coordinate Wise Clipping
 about this clipping methods
-$$
-\text{Coordinate-wise Clip:}\\ \alpha_w = \frac{\eta}{|\frac{\partial f}{\partial w}(x^k, \xi^k)|}, \text{where}\ w - \text{current model's parameter}\
-$$
+$$\text{Coordinate-wise Clip:}\\ \alpha_w = \frac{\eta}{|\frac{\partial f}{\partial w}(x^k, \xi^k)|}, \text{where}\ w - \text{current model's parameter}\$$
 -----------
 
 ##### <a name="AutoClip"></a>	Auto Clipping
 about this clipping methods
-$$
-\text{Auto Clip:}\\ \alpha_{\text{auto}} = \frac{\eta(p)}{||\nabla f(x^k,\xi^k)||_2}, \text{where}\  0 < p \leq 1 \text{ and}\ \eta(p) - \text{p-th percentile}\
-$$
+$$\text{Auto Clip:}\\ \alpha_{\text{auto}} = \frac{\eta(p)}{||\nabla f(x^k,\xi^k)||_2}, \text{where}\  0 < p \leq 1 \text{ and}\ \eta(p) - \text{p-th percentile}\$$
 
 -----------
 
 ##### <a name="LinearStochAutoClip"></a>	Linear Stoch Auto Clipping
 about this clipping methods  
-$$
-\text{Linear Random Auto Clip:}\\ P(\text{clip})=\beta^{\alpha_{\text{auto}}}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{auto}}
-$$
+$$\text{Linear Random Auto Clip:}\\ P(\text{clip})=\beta^{\alpha_{\text{auto}}}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{auto}} $$
 -----------
 
 ##### <a name="QuadraticStochAutoClip"></a>	Quadratic Stoch Auto Clipping
 about this clipping methods  
-$$
-\text{Quadratic Random Norm Clip:}\\ P(\text{clip})=\beta^{\alpha_{\text{auto}}^2}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{auto}}
-$$
+$$\text{Quadratic Random Norm Clip:}\\ P(\text{clip})=\beta^{\alpha_{\text{auto}}^2}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{auto}}$$
 -----------
