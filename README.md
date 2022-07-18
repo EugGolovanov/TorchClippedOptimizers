@@ -58,7 +58,7 @@ $$P(\text{clip})=\beta^{\alpha_{\text{norm}}^2},\text{where}\ 0<\beta<1 \text{ a
 
 #### <a name="LayerWiseClip"></a>	Layer Wise Clipping
 about this clipping methods  
-$$\alpha_{\text{layer}} = \frac{\eta}{||\nabla_{w} f(x^k,\xi^k)||_2}$$
+$$\alpha_{\text{layer}} = \frac{\eta}{||\nabla_{w_{layer}} f(x^k,\xi^k)||_2}$$
 
 #### <a name="CoordWiseClip"></a>	Coordinate Wise Clipping
 about this clipping methods
