@@ -49,7 +49,7 @@ We conducted a study to study the quality of our clipping methods on a number of
 <br>
 
 #### <a name="NormClip"></a> Norm Clipping
-about this clipping methods
+Norm-clipping is a basic clipping method that uses a constant to clip gradient.
 $$\alpha_{norm} = {\frac{\eta}{||\nabla f(x^k, \xi^k)||_2}}$$
 
 -----------
@@ -57,21 +57,21 @@ $$\alpha_{norm} = {\frac{\eta}{||\nabla f(x^k, \xi^k)||_2}}$$
 <br>
 
 #### <a name="LinearRandNormClip"></a> Linear Random Norm Clipping
-about this clipping methods
+LinearRandNormClip is a norm-clipping method using randomization when clipping gradient, which helps to shift the mathematical expectation less.
 $$P(\text{clip})=\beta^{\alpha_{\text{norm}}}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{norm}}$$
 
 -----------
 <br>
 
 #### <a name="QuadraticRandNormClip"></a>	Quadratic Random Norm Clipping
-about this clipping methods  
+QuadraticRandNormClip is a norm-clipping method using randomization when clipping gradient and increasing the probability of clipping by squaring.
 $$P(\text{clip})=\beta^{\alpha_{\text{norm}}^2},\text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{norm}}$$
 
 -----------
 <br>
 
 #### <a name="LayerWiseClip"></a>	Layer Wise Clipping
-about this clipping methods  
+LayerWiseClip is a constant clipping method that clips gradients for each layer of the model separately
 
 $$\alpha_{\text{layer}} = \frac{\eta}{||\nabla_{w_{l}} f(x^k,\xi^k)||_2}, \text{where}\ w_l - \text{ weights of current layer in neural network}\ $$
 
@@ -79,29 +79,28 @@ $$\alpha_{\text{layer}} = \frac{\eta}{||\nabla_{w_{l}} f(x^k,\xi^k)||_2}, \text{
 <br>
 
 #### <a name="CoordWiseClip"></a>	Coordinate Wise Clipping
-about this clipping methods
-
+CoordWiseClip is a constant clipping method that clips gradients for each model parameters of the model separately (because of this, the direction of the gradient vector may change)
 $$\alpha_w = \frac{\eta}{|\frac{\partial f}{\partial w}(x^k, \xi^k)|},  w - \text{current model's parameter}\$$
 
 -----------
 <br>
 
 #### <a name="AutoClip"></a>	Auto Clipping
-about this clipping methods
+AutoClip is a clipping method that automatically selects the pth percentile in the gradient length distribution and uses it as a parameter for clipping.
 $$\alpha_{\text{auto}} = \frac{\eta(p)}{||\nabla f(x^k,\xi^k)||_2}, \text{where}\  0 < p \leq 1 \text{ and}\ \eta(p) - \text{p-th percentile}\$$
 
 -----------
 <br>
 
 #### <a name="LinearRandAutoClip"></a>	Linear Random Auto Clipping
-about this clipping methods  
+LinearRandAutoClip is an auto-clipping method, using randomization when clipping gradient, which helps to shift the mathematical expectation less.
 $$P(\text{clip})=\beta^{\alpha_{\text{auto}}}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{auto}} $$
 
 -----------
 <br>
 
 #### <a name="QuadraticRandAutoClip"></a>	Quadratic Random Auto Clipping
-about this clipping methods  
+QuadraticRandAutoClip is an automatic clipping method that uses randomization when clipping gradient and squaring the clipping probability.
 $$P(\text{clip})=\beta^{\alpha_{\text{auto}}^2}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{auto}}$$
 
 -----------
