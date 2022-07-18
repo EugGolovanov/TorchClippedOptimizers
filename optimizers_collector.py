@@ -26,8 +26,12 @@ lr_decays = collector.lr_decays
 
 
 class OptimizerProperties:
+<<<<<<< HEAD
     """Класс для хранения класса и параметров инициализации оптимизатора"""
 
+=======
+    """A class for storing the class and initialization parameters of the optimizer"""
+>>>>>>> main
     def __init__(self, optimizer_class, **kwargs):
         self.optimizer_class = optimizer_class
         self.optimizer_kwargs = kwargs
@@ -41,17 +45,20 @@ class ModelProperties:
         self.model = model_class
         self.model_kwargs = kwargs
 
+<<<<<<< HEAD
 
 tmp = OptimizerProperties(optimizer_class=Adam)
+=======
+>>>>>>> main
 
 
 class OptimizersCollector:
     def __init__(self, model_properties: ModelProperties, optimizers_properties: List[OptimizerProperties],
                  starting_point_random_seed=42, history_random_seed=42, **kwargs):
         """
-            Класс для инициализации оптимизаторов и получения их параметров
-            bs_muls и lr_decays можно передать в kwargs,
-            по-умолчанию автоматически инициализируются единичками
+            A class for initializing optimizers and getting their parameters
+            bs_murs and lr_decays can be passed to kwargs,
+            by default they are automatically initialized with ones
         """
         self.optimizers_properties = optimizers_properties
         self.nets = []
