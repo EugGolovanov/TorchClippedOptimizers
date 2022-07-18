@@ -49,6 +49,7 @@ $$\alpha_{norm} = {\frac{\eta}{||\nabla f(x^k, \xi^k)||_2}}$$
 
 -----------
 <br>
+<br>
 
 #### <a name="LinearStochNormClip"></a> Linear Stoch Norm Clipping
 about this clipping methods
