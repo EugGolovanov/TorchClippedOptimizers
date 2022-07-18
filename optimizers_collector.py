@@ -1,33 +1,36 @@
+"""Module for convinient optimizer's properties accumulation
+
+    Examples:
+        >>> from optimizers_collector import OptimizerProperties, OptimizersCollector
+        >>>
+        >>> optimizers_properties = [
+        >>>   OptimizerProperties(optimizer_class=clipped_SGD, lr=5e-2, momentum=0.9,
+        >>>                     clipping_type="norm", clipping_level=1, p_autoclip=0.75),
+        >>>   OptimizerProperties(optimizer_class=clipped_SGD, lr=5e-2, momentum=0.9,
+        >>>                 clipping_type="auto_clip", clipping_level=1, p_autoclip=0.25),
+        >>>   OptimizerProperties(optimizer_class=optim.SGD, lr=0.01, momentum=0.9),
+        >>>   OptimizerProperties(optimizer_class=optim.Adam, lr=1e-3)
+        >>> ]
+        >>>
+        >>> collector = OptimizersCollector(models.resnet18, optimizers_properties)
+        >>>
+        >>> criterion = nn.CrossEntropyLoss()
+        >>> opts = collector.get_optimizer_objects()
+        >>> opt_names = collector.get_names_optimizers()
+        >>> nets = collector.nets
+        >>> bs_muls = collector.bs_muls
+        >>> lr_decays = collector.lr_decays
+"""
+
+
 from typing import List
 
 import torch
 
-"""
-Example:
-
-from optimizers_collector import OptimizerProperties, OptimizersCollector
-optimizers_properties = [
-  OptimizerProperties(optimizer_class=clipped_SGD, lr=5e-2, momentum=0.9, 
-                    clipping_type="norm", clipping_level=1, p_autoclip=0.75),
-  OptimizerProperties(optimizer_class=clipped_SGD, lr=5e-2, momentum=0.9, 
-                clipping_type="auto_clip", clipping_level=1, p_autoclip=0.25),
-  OptimizerProperties(optimizer_class=optim.SGD, lr=0.01, momentum=0.9),
-  OptimizerProperties(optimizer_class=optim.Adam, lr=1e-3)
-]
-
-collector = OptimizersCollector(models.resnet18, optimizers_properties)
-
-criterion = nn.CrossEntropyLoss()
-opts = collector.get_optimizer_objects()
-opt_names = collector.get_names_optimizers()
-nets = collector.nets
-bs_muls = collector.bs_muls
-lr_decays = collector.lr_decays
-"""
-
 
 class OptimizerProperties:
-    """A class for storing the class and initialization parameters of the optimizer"""
+    """A class for storing the class and initialization parameters of the optimizer
+    """
     def __init__(self, optimizer_class, **kwargs):
         self.optimizer_class = optimizer_class
         self.optimizer_kwargs = kwargs
