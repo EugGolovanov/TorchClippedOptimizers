@@ -2,9 +2,7 @@
 TODO: Module docstring
 """
 
-
 import heapq as hp
-import random
 from copy import deepcopy
 from typing import List, Optional
 
@@ -21,13 +19,17 @@ class GradLenHistory:
     """
     TODO: Class docstring
     """
+
     def __init__(self, clipping_type: str, p_autoclip: float = 0.75):
         if p_autoclip <= 0 or p_autoclip > 1:  # 0 < p_autoclip ≤ 1
             raise ValueError('Invalid p_autoclip value (expected value between 0 and 1)')
+
         self.p_autoclip = p_autoclip
         self.clipping_type = clipping_type
+
         self.heap = []
         hp.heapify(self.heap)
+
         self.all_grad_lens = []
 
     def get_grad_len(self):
@@ -41,7 +43,9 @@ class GradLenHistory:
         TODO: Method docstring
         """
         self.all_grad_lens.append(grad)
+
         if self.clipping_type in AUTO_CLIP_TYPES:
+
             if len(self.heap) / len(self.all_grad_lens) < self.p_autoclip:
                 hp.heappush(self.heap, -grad)
             elif grad < -self.heap[0]:
@@ -58,8 +62,10 @@ class NoClip:
     """
     TODO: Class docstring
     """
+
     def __init__(self, **kwargs):
         self.kwargs = kwargs
+
         if kwargs['clipping_type'] in AUTO_CLIP_TYPES:
             self.grad_history = GradLenHistory(kwargs['clipping_type'], kwargs['p_autoclip'])
         else:
@@ -113,6 +119,7 @@ class NormClip(NoClip):
     """
     TODO: Class docstring
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -129,6 +136,7 @@ class LinearStochNormClip(NoClip):
     """
     TODO: Class docstring
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -139,8 +147,10 @@ class LinearStochNormClip(NoClip):
         beta = kwargs['beta']
         clipping_level = kwargs['clipping_level']
         grad_norm = kwargs['grad_norm']
+
         prob = pow(beta, clipping_level / grad_norm)
-        clip = random.choices([True, False], weights=[prob, 1 - prob])[0]
+        clip = bool(torch.rand(1) < prob)
+
         if not clip or clipping_level > grad_norm:
             return 1
         return min(1, clipping_level / grad_norm)
@@ -150,6 +160,7 @@ class QuadraticStochNormClip(NoClip):
     """
     TODO: Class docstring
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -160,8 +171,10 @@ class QuadraticStochNormClip(NoClip):
         beta = kwargs['beta']
         clipping_level = kwargs['clipping_level']
         grad_norm = kwargs['grad_norm']
+
         prob = pow(beta, (clipping_level / grad_norm) ** 2)
-        clip = random.choices([True, False], weights=[prob, 1 - prob])[0]
+        clip = bool(torch.rand(1) < prob)
+
         if not clip or clipping_level > grad_norm:
             return 1
         return min(1, clipping_level / grad_norm)
@@ -171,6 +184,7 @@ class LayerWiseClip(NoClip):
     """
     TODO: Class docstring
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -188,6 +202,7 @@ class CoordWiseClip(NoClip):
     """
     TODO: Class docstring
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -206,6 +221,7 @@ class AutoClip(NoClip):
     """
     TODO: Class docstring
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -222,6 +238,7 @@ class LinearStochAutoClip(NoClip):
     """
     TODO: Class docstring
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -232,8 +249,10 @@ class LinearStochAutoClip(NoClip):
         beta = kwargs['beta']
         grad_norm_p = self.grad_history.get_grad_len()
         grad_norm = kwargs['grad_norm']
+
         prob = pow(beta, grad_norm_p / grad_norm)
-        clip = random.choices([True, False], weights=[prob, 1 - prob])[0]
+        clip = bool(torch.rand(1) < prob)
+
         if not clip or grad_norm_p > grad_norm:
             return 1
         return min(1, grad_norm_p / grad_norm)
@@ -243,6 +262,7 @@ class QuadraticStochAutoClip(NoClip):
     """
     TODO: Class docstring
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -253,8 +273,10 @@ class QuadraticStochAutoClip(NoClip):
         beta = kwargs['beta']
         grad_norm_p = self.grad_history.get_grad_len()
         grad_norm = kwargs['grad_norm']
+
         prob = pow(beta, (grad_norm_p / grad_norm) ** 2)
-        clip = random.choices([True, False], weights=[prob, 1 - prob])[0]
+        clip = bool(torch.rand(1) < prob)
+
         if not clip or grad_norm_p > grad_norm:
             return 1
         return min(1, grad_norm_p / grad_norm)
@@ -264,25 +286,24 @@ def get_clipped_grad_desc_step(**kwargs):
     """
     TODO: Function docstring
     """
-    if kwargs['clipping_type'] == 'no_clip':
-        return NoClip(**kwargs)
-    if kwargs['clipping_type'] == 'norm':
-        return NormClip(**kwargs)
-    if kwargs['clipping_type'] == 'layer_wise':
-        return LayerWiseClip(**kwargs)
-    if kwargs['clipping_type'] == 'coordinate_wise':
-        return CoordWiseClip(**kwargs)
-    if kwargs['clipping_type'] == 'auto_clip':
-        return AutoClip(**kwargs)
-    if kwargs['clipping_type'] == 'linear_stoch_autoclip':
-        return LinearStochAutoClip(**kwargs)
-    if kwargs['clipping_type'] == 'quadratic_stoch_autoclip':
-        return QuadraticStochAutoClip(**kwargs)
-    if kwargs['clipping_type'] == 'linear_stoch_norm':
-        return LinearStochNormClip(**kwargs)
-    if kwargs['clipping_type'] == 'quadratic_stoch_norm':
-        return QuadraticStochNormClip(**kwargs)
-    raise TypeError(f'No clipping type called {kwargs["clipping_type"]}')
+    type_class = {
+        'no_clip': NoClip,
+        'norm': NormClip,
+        'layer_wise': LayerWiseClip,
+        'coordinate_wise': CoordWiseClip,
+        'auto_clip': AutoClip,
+        'linear_stoch_autoclip': LinearStochAutoClip,
+        'quadratic_stoch_autoclip': QuadraticStochAutoClip,
+        'linear_stoch_norm': LinearStochNormClip,
+        'quadratic_stoch_norm': QuadraticStochNormClip
+    }
+
+    try:
+        clipping_class = type_class[kwargs['clipping_type']]
+    except KeyError:
+        raise TypeError(f'No clipping type called {kwargs["clipping_type"]}')
+    else:
+        return clipping_class(**kwargs)
 
 
 class _RequiredParameter:

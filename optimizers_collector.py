@@ -4,6 +4,8 @@ import torch
 from torch.optim import Adam
 
 """
+Example:
+
 from optimizers_collector import OptimizerProperties, OptimizersCollector
 optimizers_properties = [
   OptimizerProperties(optimizer_class=clipped_SGD, lr=5e-2, momentum=0.9, 
@@ -81,6 +83,7 @@ class OptimizersCollector:
             for k, v in self.optimizers_properties[i].optimizer_kwargs.items():
                 name += f"{k}={v}, "
             name = name[:-2]
+
             opt_names.append(name)
 
         return opt_names
