@@ -1,7 +1,6 @@
 from typing import List
 
 import torch
-from torch.optim import Adam
 
 """
 Example:
