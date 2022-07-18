@@ -14,12 +14,24 @@ class PlotMaker:
 
     font_dict = {'fontsize': 14, 'fontweight': 'medium'}
     def __init__(self, main_title, names_optimizers, metric_name="accuracy", loss_name=""):
+        """
+        :param main_title: title for the entire graph
+        :param names_optimizers: names of optimizers for legend plot
+        :param metric_name: name of metric for axis title
+        :param loss_name: name of loss for axis title
+        """
         self.main_title = main_title
         self.names_optimizers = names_optimizers
         self.metric_name = metric_name
         self.loss_name = loss_name
 
     def draw_plot(self, train_losses, train_acc, val_acc):
+        """
+        Function for draw matplotlib pyplot histories loss/metric graphs
+        :param train_losses, train_acc, val_acc: histories
+        each parameter:
+        list(count_optimizers, x-custom-len) - list of history lists for each optimizer
+        """
         fig = plt.figure(figsize=(20, 8))
         fig.suptitle(self.main_title, fontsize=20)
 
