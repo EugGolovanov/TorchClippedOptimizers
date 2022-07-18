@@ -1,3 +1,7 @@
+"""Submodule containing auxiliary functions and data structures
+"""
+
+
 import heapq as hp
 from copy import deepcopy
 
@@ -7,8 +11,11 @@ from tqdm import tqdm
 
 
 class GradLenHistory:
-    """
-    TODO: Class docstring
+    """Data structure with adaptive API for efficient saving gradients' lengths history
+    and calculating its p-th percentile
+    Args:
+        clipping_type (string): type of clipping
+        p_autoclip (float): p-th percentile for auto-clip clipping methods
     """
 
     def __init__(self, clipping_type: str, p_autoclip: float = 0.75):
@@ -24,27 +31,26 @@ class GradLenHistory:
         self.all_grad_lens = []
 
     def get_grad_len(self):
-        """
-        TODO: Method docstring
+        """Calculates p-th percentile of all gradients' lengths
         """
         return -self.heap[0]
 
-    def add_grad_len(self, grad):
+    def add_grad_len(self, grad_len):
+        """Adds length of new gradient to the data structures
+        Args:
+            grad_len (float): length of new gradient
         """
-        TODO: Method docstring
-        """
-        self.all_grad_lens.append(grad)
+        self.all_grad_lens.append(grad_len)
 
         if self.clipping_type in AUTO_CLIP_TYPES:
 
             if len(self.heap) / len(self.all_grad_lens) < self.p_autoclip:
-                hp.heappush(self.heap, -grad)
-            elif grad < -self.heap[0]:
-                hp.heappushpop(self.heap, -grad)
+                hp.heappush(self.heap, -grad_len)
+            elif grad_len < -self.heap[0]:
+                hp.heappushpop(self.heap, -grad_len)
 
     def get_history(self) -> list:
-        """
-        TODO: Method docstring
+        """Returns whole gradients' lengths history
         """
         return self.all_grad_lens
 
@@ -67,8 +73,12 @@ class _DependingParameter:
 
 
 def get_clipped_grad_desc_step(**kwargs):
-    """
-    TODO: Function docstring
+    """Returns appropriate clipping class according to provided clipping method
+    Keyword arguments:
+        clipping_type (string): type of clipping defining appropriate get_alpha() method
+        clipping_level (float): coefficient for constant clipping methods
+        p_autoclip (float): p-th percentile for auto-clip clipping methods
+        beta (float): basis of clipping probability in random clipping methods
     """
     type_class = {
         'no_clip': NoClip,
@@ -76,10 +86,10 @@ def get_clipped_grad_desc_step(**kwargs):
         'layer_wise': LayerWiseClip,
         'coordinate_wise': CoordWiseClip,
         'auto_clip': AutoClip,
-        'linear_stoch_autoclip': LinearStochAutoClip,
-        'quadratic_stoch_autoclip': QuadraticStochAutoClip,
-        'linear_stoch_norm': LinearStochNormClip,
-        'quadratic_stoch_norm': QuadraticStochNormClip
+        'linear_rand_autoclip': LinearRandAutoClip,
+        'quadratic_rand_autoclip': QuadraticRandAutoClip,
+        'linear_rand_norm': LinearRandNormClip,
+        'quadratic_rand_norm': QuadraticRandNormClip
     }
 
     try:
@@ -91,8 +101,7 @@ def get_clipped_grad_desc_step(**kwargs):
 
 
 def recursive_to(param, device):
-    """
-    TODO: Function docstring
+    """Auxiliary recursive function for optimizer_to()
     """
     # Not sure if there are any global tensors in the state dict
     if isinstance(param, torch.Tensor):
@@ -108,8 +117,10 @@ def recursive_to(param, device):
 
 
 def optimizer_to(optim, device):
-    """
-    TODO: Function docstring
+    """Function that sets up the optimizer to given device
+    Args:
+        optim (torch.optim.Optimizer): optimizer
+        device (string): device name
     """
     for param_group in optim.param_groups:
         for param in param_group.values():
@@ -118,8 +129,14 @@ def optimizer_to(optim, device):
 
 
 def get_optimal_L(model, optimizer, criterion, train_loader, epochs=1):
-    """
-    TODO: Function docstring
+    """Function that calculates optimal Lipschitz value for SSTM optimizer
+    Args:
+        model (torch.nn.Module): neural network (model)
+        optimizer (torch.optim.Optimizer): SSTM optimizer
+        criterion (torch.nn.): criterion (loss function)
+        train_loader (torch.utils.data.DataLoader): dataloader containing train data
+        epochs (int, optimal): number of epochs during which Lipschitz value will be calculated
+            default: 1
     """
     if torch.cuda.is_available():
         device = 'cuda'

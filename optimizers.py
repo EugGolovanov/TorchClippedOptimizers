@@ -1,6 +1,18 @@
+"""Module containing custom SGD and SSTM optimizers
+
+    Examples:
+        >>> from optimizers import ClippedSGD, ClippedSSTM
+        >>>
+        >>> optimizer_1 = ClippedSGD(model.parameters, 5e-3, momentum=0.9,
+        >>>                          clipping_type='layer_wise', clipping_level=10.0)
+        >>>
+        >>> optimizer_2 = ClippedSGD(model.parameters, 1e-2, momentum=0.9,
+        >>>                          clipping_type='quadratic_rand_autoclip', beta=0.85, p_autoclip=0.75)
+        >>>
+        >>> optimizer_3 = ClippedSSTM(model.parameters, 1e-5, L=1,
+        >>>                           clipping_type='auto_clip', p_autoclip=0.75)
 """
-TODO: Module docstring
-"""
+
 
 from torch.optim import Optimizer
 
@@ -58,10 +70,10 @@ class ClippedSGD(Optimizer):
             'layer_wise': 0.3,
             'coordinate_wise': 0.1,
             'auto_clip': 1.0,
-            'linear_stoch_norm': 1.0,
-            'quadratic_stoch_norm': 1.0,
-            'linear_stoch_autoclip': 1.0,
-            'quadratic_stoch_autoclip': 1.0
+            'linear_rand_norm': 1.0,
+            'quadratic_rand_norm': 1.0,
+            'linear_rand_autoclip': 1.0,
+            'quadratic_rand_autoclip': 1.0
         }
         if clipping_type not in type_to_default_level:
             raise ValueError(f"Invalid clipping type: {l_r}, "
@@ -199,10 +211,10 @@ class ClippedSSTM(Optimizer):
             'layer_wise': 0.3,
             'coordinate_wise': 0.1,
             'auto_clip': 1.0,
-            'linear_stoch_norm': 1.0,
-            'quadratic_stoch_norm': 1.0,
-            'linear_stoch_autoclip': 1.0,
-            'quadratic_stoch_autoclip': 1.0
+            'linear_rand_norm': 1.0,
+            'quadratic_rand_norm': 1.0,
+            'linear_rand_autoclip': 1.0,
+            'quadratic_rand_autoclip': 1.0
         }
 
         if clipping_type not in type_to_default_level:

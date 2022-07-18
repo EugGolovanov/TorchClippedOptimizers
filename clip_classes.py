@@ -1,3 +1,7 @@
+"""Submodule containing clipping classes with clipping and gradient coefficients calculation
+"""
+
+
 from typing import List, Optional
 
 import torch
@@ -5,14 +9,17 @@ from torch import Tensor
 
 from utils import GradLenHistory
 
-AUTO_CLIP_TYPES = ['auto_clip', 'linear_stoch_autoclip', 'quadratic_stoch_autoclip']
+AUTO_CLIP_TYPES = ['auto_clip', 'linear_rand_autoclip', 'quadratic_rand_autoclip']
 
 
 class NoClip:
+    """Class-wrapper for calculating gradient coefficient with no-clip version by default
+    Keyword Arguments:
+        clipping_type (string): type of clipping defining appropriate get_alpha() method
+        clipping_level (float): coefficient for constant clipping methods
+        p_autoclip (float): p-th percentile for auto-clip clipping methods
+        beta (float): basis of clipping probability in random clipping methods
     """
-    TODO: Class docstring
-    """
-
     def __init__(self, **kwargs):
         self.kwargs = kwargs
 
@@ -22,8 +29,7 @@ class NoClip:
             self.grad_history = GradLenHistory(kwargs['clipping_type'])
 
     def get_alpha(self, **kwargs):
-        """
-        TODO: Method docstring
+        """Method that calculates clipping coefficient with no-clip version
         """
         return 1
 
@@ -35,6 +41,10 @@ class NoClip:
                  momentum: float,
                  clipping_type: str,
                  clipping_level: float):
+        """Functional API that performs clipped step for slipped-SGD and clipped-SSTM algorithm
+        computation.
+        See :class:`clipped_SGD` or class:`clipped_SSTM` for details.
+        """
 
         grad_norm = 0.0
         for i in range(len(params)):
@@ -66,33 +76,37 @@ class NoClip:
 
 
 class NormClip(NoClip):
-    """
-    TODO: Class docstring
+    """Inheritor class for calculating clipping coefficient with norm-clip version
+    Keyword Arguments:
+        clipping_level (float): coefficient for constant clipping methods
+        p_autoclip (float): p-th percentile for auto-clip clipping methods
+        beta (float): basis of clipping probability in random clipping methods
     """
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def get_alpha(self, **kwargs):
-        """
-        TODO: Method docstring
+        """Method that calculates clipping coefficient with norm-clip version
         """
         clipping_level = kwargs['clipping_level']
         grad_norm = kwargs['grad_norm']
         return min(1, clipping_level / grad_norm)
 
 
-class LinearStochNormClip(NoClip):
-    """
-    TODO: Class docstring
+class LinearRandNormClip(NoClip):
+    """Inheritor class for calculating clipping coefficient with linear-random-norm version
+    Keyword Arguments:
+        clipping_level (float): coefficient for constant clipping methods
+        p_autoclip (float): p-th percentile for auto-clip clipping methods
+        beta (float): basis of clipping probability in random clipping methods
     """
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def get_alpha(self, **kwargs):
-        """
-        TODO: Method docstring
+        """Method that calculates clipping coefficient with linear-random-norm version
         """
         beta = kwargs['beta']
         clipping_level = kwargs['clipping_level']
@@ -106,17 +120,19 @@ class LinearStochNormClip(NoClip):
         return min(1, clipping_level / grad_norm)
 
 
-class QuadraticStochNormClip(NoClip):
-    """
-    TODO: Class docstring
+class QuadraticRandNormClip(NoClip):
+    """Inheritor class for calculating clipping coefficient with quadratic-random-norm version
+    Keyword Arguments:
+        clipping_level (float): coefficient for constant clipping methods
+        p_autoclip (float): p-th percentile for auto-clip clipping methods
+        beta (float): basis of clipping probability in random clipping methods
     """
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def get_alpha(self, **kwargs):
-        """
-        TODO: Method docstring
+        """Method that calculates clipping coefficient with quadratic-random-norm version
         """
         beta = kwargs['beta']
         clipping_level = kwargs['clipping_level']
@@ -131,8 +147,11 @@ class QuadraticStochNormClip(NoClip):
 
 
 class LayerWiseClip(NoClip):
-    """
-    TODO: Class docstring
+    """Inheritor class for calculating clipping coefficient with layer-wise version
+    Keyword Arguments:
+        clipping_level (float): coefficient for constant clipping methods
+        p_autoclip (float): p-th percentile for auto-clip clipping methods
+        beta (float): basis of clipping probability in random clipping methods
     """
 
     def __init__(self, **kwargs):
@@ -140,8 +159,7 @@ class LayerWiseClip(NoClip):
 
     @staticmethod
     def get_alpha(**kwargs):
-        """
-        TODO: Method docstring
+        """Method that calculates clipping coefficient with layer-wise version
         """
         clipping_level = kwargs['clipping_level']
         d_p = kwargs['d_p']
@@ -149,8 +167,11 @@ class LayerWiseClip(NoClip):
 
 
 class CoordWiseClip(NoClip):
-    """
-    TODO: Class docstring
+    """Inheritor class for calculating clipping coefficient with coordinate-wise version
+    Keyword Arguments:
+        clipping_level (float): coefficient for constant clipping methods
+        p_autoclip (float): p-th percentile for auto-clip clipping methods
+        beta (float): basis of clipping probability in random clipping methods
     """
 
     def __init__(self, **kwargs):
@@ -158,8 +179,7 @@ class CoordWiseClip(NoClip):
 
     @staticmethod
     def get_alpha(**kwargs):
-        """
-        TODO: Method docstring
+        """Method that calculates clipping coefficient with coordinate-wise version
         """
         eps = 1e-8
         clipping_level = kwargs['clipping_level']
@@ -168,33 +188,37 @@ class CoordWiseClip(NoClip):
 
 
 class AutoClip(NoClip):
-    """
-    TODO: Class docstring
+    """Inheritor class for calculating clipping coefficient with auto-clip version
+    Keyword Arguments:
+        clipping_level (float): coefficient for constant clipping methods
+        p_autoclip (float): p-th percentile for auto-clip clipping methods
+        beta (float): basis of clipping probability in random clipping methods
     """
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def get_alpha(self, **kwargs):
-        """
-        TODO: Method docstring
+        """Method that calculates clipping coefficient with auto-clip version
         """
         grad_norm_p = self.grad_history.get_grad_len()
         grad_norm = kwargs['grad_norm']
         return min(1, grad_norm_p / grad_norm)
 
 
-class LinearStochAutoClip(NoClip):
-    """
-    TODO: Class docstring
+class LinearRandAutoClip(NoClip):
+    """Inheritor class for calculating clipping coefficient with linear-random-auto-clip version
+    Keyword Arguments:
+        clipping_level (float): coefficient for constant clipping methods
+        p_autoclip (float): p-th percentile for auto-clip clipping methods
+        beta (float): basis of clipping probability in random clipping methods
     """
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def get_alpha(self, **kwargs):
-        """
-        TODO: Method docstring
+        """Method that calculates clipping coefficient with linear-random-auto-clip version
         """
         beta = kwargs['beta']
         grad_norm_p = self.grad_history.get_grad_len()
@@ -208,17 +232,19 @@ class LinearStochAutoClip(NoClip):
         return min(1, grad_norm_p / grad_norm)
 
 
-class QuadraticStochAutoClip(NoClip):
-    """
-    TODO: Class docstring
+class QuadraticRandAutoClip(NoClip):
+    """Inheritor class for calculating clipping coefficient with quadratic-random-auto-clip version
+    Keyword Arguments:
+        clipping_level (float): coefficient for constant clipping methods
+        p_autoclip (float): p-th percentile for auto-clip clipping methods
+        beta (float): basis of clipping probability in random clipping methods
     """
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def get_alpha(self, **kwargs):
-        """
-        TODO: Method docstring
+        """Method that calculates clipping coefficient with quadratic-random-auto-clip version
         """
         beta = kwargs['beta']
         grad_norm_p = self.grad_history.get_grad_len()

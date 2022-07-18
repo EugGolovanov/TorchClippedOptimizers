@@ -25,13 +25,13 @@ In the last few years, for various neural network training models (for example, 
 ### Our clipping methods
 
 + [Norm Clipping](#NormClip)
-+ [Linear Stoch Norm Clipping](#LinearStochNormClip);  
-+ [Quadratic Stoch Norm Clipping](#QuadraticStochNormClip);  
++ [Linear Random Norm Clipping](#LinearRandNormClip);  
++ [Quadratic Random Norm Clipping](#QuadraticRandNormClip);  
 + [Layer Wise Clipping](#LayerWiseClip);  
 + [Coordinate Wise Clipping](#CoordWiseClip);  
 + [Auto Clipping](#AutoClip);  
-+ [Linear Stoch Auto Clipping](#LinearStochAutoClip);  
-+ [Quadratic Stoch Auto Clipping](#QuadraticStochAutoClip).
++ [Linear Random Auto Clipping](#LinearRandAutoClip);  
++ [Quadratic Random Auto Clipping](#QuadraticRandAutoClip).
 
 
 ### Comparison on different tasks
@@ -56,15 +56,15 @@ $$\alpha_{norm} = {\frac{\eta}{||\nabla f(x^k, \xi^k)||_2}}$$
 <br>
 <br>
 
-#### <a name="LinearStochNormClip"></a> Linear Stoch Norm Clipping
-LinearStochNormClip is a norm-clipping method using randomization when clipping gradient, which helps to shift the mathematical expectation less.
+#### <a name="LinearRandNormClip"></a> Linear Random Norm Clipping
+LinearRandNormClip is a norm-clipping method using randomization when clipping gradient, which helps to shift the mathematical expectation less.
 $$P(\text{clip})=\beta^{\alpha_{\text{norm}}}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{norm}}$$
 
 -----------
 <br>
 
-#### <a name="QuadraticStochNormClip"></a>	Quadratic Stoch Norm Clipping
-QuadraticStochNormClip is a norm-clipping method using randomization when clipping gradient and increasing the probability of clipping by squaring.
+#### <a name="QuadraticRandNormClip"></a>	Quadratic Random Norm Clipping
+QuadraticRandNormClip is a norm-clipping method using randomization when clipping gradient and increasing the probability of clipping by squaring.
 $$P(\text{clip})=\beta^{\alpha_{\text{norm}}^2},\text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{norm}}$$
 
 -----------
@@ -92,15 +92,15 @@ $$\alpha_{\text{auto}} = \frac{\eta(p)}{||\nabla f(x^k,\xi^k)||_2}, \text{where}
 -----------
 <br>
 
-#### <a name="LinearStochAutoClip"></a>	Linear Stoch Auto Clipping
-LinearStochAutoClip is an auto-clipping method, using randomization when clipping gradient, which helps to shift the mathematical expectation less.
+#### <a name="LinearRandAutoClip"></a>	Linear Random Auto Clipping
+LinearRandAutoClip is an auto-clipping method, using randomization when clipping gradient, which helps to shift the mathematical expectation less.
 $$P(\text{clip})=\beta^{\alpha_{\text{auto}}}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{auto}} $$
 
 -----------
 <br>
 
-#### <a name="QuadraticStochAutoClip"></a>	Quadratic Stoch Auto Clipping
-QuadraticStochAutoClip is an automatic clipping method that uses randomization when clipping gradient and squaring the clipping probability.
+#### <a name="QuadraticRandAutoClip"></a>	Quadratic Random Auto Clipping
+QuadraticRandAutoClip is an automatic clipping method that uses randomization when clipping gradient and squaring the clipping probability.
 $$P(\text{clip})=\beta^{\alpha_{\text{auto}}^2}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{auto}}$$
 
 -----------
