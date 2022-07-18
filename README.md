@@ -58,11 +58,16 @@ $$P(\text{clip})=\beta^{\alpha_{\text{norm}}^2},\text{where}\ 0<\beta<1 \text{ a
 
 #### <a name="LayerWiseClip"></a>	Layer Wise Clipping
 about this clipping methods  
-$$\alpha_{\text{layer}} = \frac{\eta}{||\nabla_{w_{layer}} f(x^k,\xi^k)||_2}, \text{where}\ \begin{equation} w_{layer} \end{equation} $$
+
+$$\alpha_{\text{layer}} = \frac{\eta}{||\nabla_{w_{layer}} f(x^k,\xi^k)||_2}, \text{where}\ {w_{layer}}$$
+
+-----------
 
 #### <a name="CoordWiseClip"></a>	Coordinate Wise Clipping
 about this clipping methods
-$$\alpha_w = \frac{\eta}{|\frac{\partial f}{\partial w}(x^k, \xi^k)|}, \text{where}\ w - \text{current model's parameter}\$$
+
+$$\alpha_w = \frac{\eta}{|\frac{\partial f}{\partial w}(x^k, \xi^k)|},  w - \text{current model's parameter}\$$
+
 -----------
 
 #### <a name="AutoClip"></a>	Auto Clipping
@@ -74,6 +79,7 @@ $$\alpha_{\text{auto}} = \frac{\eta(p)}{||\nabla f(x^k,\xi^k)||_2}, \text{where}
 #### <a name="LinearStochAutoClip"></a>	Linear Stoch Auto Clipping
 about this clipping methods  
 $$P(\text{clip})=\beta^{\alpha_{\text{auto}}}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{auto}} $$
+
 -----------
 
 #### <a name="QuadraticStochAutoClip"></a>	Quadratic Stoch Auto Clipping
