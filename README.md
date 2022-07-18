@@ -11,7 +11,12 @@
 ### Installation
 you can install our library using pip:  
 `pip install torch-clip`  
-
+```requirements.txt
+numpy~=1.20.0
+torch~=1.11.0+cu113
+matplotlib~=3.4.3
+tqdm~=4.62.3
+```
 
 ### What do you need us for?
 In the last few years, for various neural network training models (for example, BERT + CoLA), it has been found that in the case of "large stochastic gradients", it is advantageous to use special clipping (clipping/normalization) of the batched gradient. Since all modern machine learning, one way or another, ultimately boils down to stochastic optimization problems, the question of exactly how to "clip" large values of batched gradients plays a key role in the development of effective numerical training methods for a large class of models. This repository implements optimizers for the pytorch library with different clipping methods.
