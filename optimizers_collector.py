@@ -4,6 +4,8 @@ import torch
 from torch.optim import Adam
 
 """
+Example:
+
 from optimizers_collector import OptimizerProperties, OptimizersCollector
 optimizers_properties = [
   OptimizerProperties(optimizer_class=clipped_SGD, lr=5e-2, momentum=0.9, 
@@ -26,12 +28,9 @@ lr_decays = collector.lr_decays
 
 
 class OptimizerProperties:
-<<<<<<< HEAD
     """Класс для хранения класса и параметров инициализации оптимизатора"""
 
-=======
     """A class for storing the class and initialization parameters of the optimizer"""
->>>>>>> main
     def __init__(self, optimizer_class, **kwargs):
         self.optimizer_class = optimizer_class
         self.optimizer_kwargs = kwargs
@@ -44,12 +43,6 @@ class ModelProperties:
     def __init__(self, model_class, **kwargs):
         self.model = model_class
         self.model_kwargs = kwargs
-
-<<<<<<< HEAD
-
-tmp = OptimizerProperties(optimizer_class=Adam)
-=======
->>>>>>> main
 
 
 class OptimizersCollector:
@@ -92,6 +85,7 @@ class OptimizersCollector:
             for k, v in self.optimizers_properties[i].optimizer_kwargs.items():
                 name += f"{k}={v}, "
             name = name[:-2]
+
             opt_names.append(name)
 
         return opt_names
