@@ -32,6 +32,11 @@ class OptimizerProperties:
     """A class for storing the class and initialization parameters of the optimizer
     """
     def __init__(self, optimizer_class, **kwargs):
+        """
+        Args:
+            optimizer_class (class/func): callable object, what return optimizer object
+            kwargs: all kwargs passed to the initialization call of the optimizer
+        """
         self.optimizer_class = optimizer_class
         self.optimizer_kwargs = kwargs
 
@@ -40,7 +45,14 @@ class OptimizerProperties:
 
 
 class ModelProperties:
+    """A class for storage model creating properties
+    """
     def __init__(self, model_class, **kwargs):
+        """
+        Args:
+            optimizer_class (class/func): callable object, what return model object
+            kwargs: all kwargs passed to the initialization call of the model
+        """
         self.model = model_class
         self.model_kwargs = kwargs
 
@@ -49,9 +61,14 @@ class OptimizersCollector:
     def __init__(self, model_properties: ModelProperties, optimizers_properties: List[OptimizerProperties],
                  starting_point_random_seed=42, history_random_seed=42, **kwargs):
         """
-            A class for initializing optimizers and getting their parameters
-            bs_murs and lr_decays can be passed to kwargs,
-            by default they are automatically initialized with ones
+            A class for initializing optimizers and getting their objects
+            Args:
+                model_properties (ModelProperties object): object for init model
+                optimizers_properties (List[OptimizerProperties]): list of optimizer properties for init optimizers
+                starting_point_random_seed, history_random_seed (int): seeds for random torch
+            Kwargs:
+                bs_murs and lr_decays can be passed to kwargs,
+                by default they are automatically initialized with ones
         """
         self.optimizers_properties = optimizers_properties
         self.nets = []
