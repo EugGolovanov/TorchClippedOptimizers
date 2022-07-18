@@ -28,8 +28,6 @@ lr_decays = collector.lr_decays
 
 
 class OptimizerProperties:
-    """Класс для хранения класса и параметров инициализации оптимизатора"""
-
     """A class for storing the class and initialization parameters of the optimizer"""
     def __init__(self, optimizer_class, **kwargs):
         self.optimizer_class = optimizer_class
@@ -44,7 +42,7 @@ class ModelProperties:
         self.model = model_class
         self.model_kwargs = kwargs
 
-
+        
 class OptimizersCollector:
     def __init__(self, model_properties: ModelProperties, optimizers_properties: List[OptimizerProperties],
                  starting_point_random_seed=42, history_random_seed=42, **kwargs):

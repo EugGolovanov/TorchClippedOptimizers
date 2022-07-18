@@ -31,15 +31,18 @@ In the last few years, for various neural network training models (for example, 
 
 ### Comparison on different tasks
 We conducted a study to study the quality of our clipping methods on a number of tasks: image classification, semantic segmentation, text classification and graph-node classification.  
-Image Classification on ImageNet dataset and Resnet18 model:  
+#### Image Classification on ImageNet dataset and Resnet18 model:  
 ![This is an image](readme_images/image-classification.png) 
-Semantic Segmentation on PascalVOC dataset and Unet model:  
+#### Semantic Segmentation on PascalVOC dataset and Unet model:  
 ![This is an image](readme_images/semnatic-segmentation.png) 
-Text Classification on CoLA dataset and Bert model:  
+#### Text Classification on CoLA dataset and Bert model:  
 ![This is an image](readme_images/text-classification.jpg) 
-Graph-Node classifcation on Reddit node dataset and custom GraphConv model:  
+#### Graph-Node classifcation on Reddit node dataset and custom GraphConv model:  
 ![This is an image](readme_images/graph-node-classification.jpg) 
 
+<br>
+<br>
+<br>
 
 #### <a name="NormClip"></a> Norm Clipping
 about this clipping methods
@@ -90,3 +93,21 @@ about this clipping methods
 $$P(\text{clip})=\beta^{\alpha_{\text{auto}}^2}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{auto}}$$
 
 -----------
+
+
+### Use Example  
+You can use our optimizers as well as all the standard optimizers from the pytorch library  
+```python
+from torch_optim.optimizers import clipped_SGD
+
+optimizer = clipped_SGD(lr=5e-2, momentum=0.9, clipping_type="layer_wise", clipping_level=1)
+loss = my_loss_function
+for epoch in range(EPOCHS):
+    for i, data in enumerate(train_loader, 0):
+        outputs = net(inputs)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+        optimizer.zero_grad()
+
+```

@@ -2,14 +2,11 @@ import matplotlib.pyplot as plt
 
 
 class PlotMaker:
-    """
-    Класс для отрисовки графиков функций ошибки и метриков моделей
-=======
     '''
-    A class for drawing graphs of error functions and model metrics
+    A class for drawing graphs of loss functions and model metrics
     >>> plot_maker = PlotMaker("Test title", ["first optimizer", "second_optimizer", "third optimizer"], metric_name="IoU", loss_name="focal_loss")
     >>> plot_maker.draw_plot(history, history, history)
-    """
+    '''
 
     def __init__(self, main_title, names_optimizers, metric_name="accuracy", loss_name=""):
         self.main_title = main_title
