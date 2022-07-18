@@ -44,22 +44,25 @@ Graph-Node classifcation on Reddit node dataset and custom GraphConv model:
 #### <a name="NormClip"></a> Norm Clipping
 about this clipping methods
 $$\alpha_{norm} = {\frac{\eta}{||\nabla f(x^k, \xi^k)||_2}}$$
+
 -----------
 
 #### <a name="LinearStochNormClip"></a> Linear Stoch Norm Clipping
 about this clipping methods
 $$P(\text{clip})=\beta^{\alpha_{\text{norm}}}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{norm}}$$
+
 -----------
 
 #### <a name="QuadraticStochNormClip"></a>	Quadratic Stoch Norm Clipping
 about this clipping methods  
 $$P(\text{clip})=\beta^{\alpha_{\text{norm}}^2},\text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{norm}}$$
+
 -----------
 
 #### <a name="LayerWiseClip"></a>	Layer Wise Clipping
 about this clipping methods  
 
-$$\alpha_{\text{layer}} = \frac{\eta}{||\nabla_{w_{layer}} f(x^k,\xi^k)||_2}, \text{where}\ w_{\text{layer}\ }$$
+$$\alpha_{\text{layer}} = \frac{\eta}{||\nabla_{w_{layer}} f(x^k,\xi^k)||_2}, \text{where}\ w_k$$
 
 -----------
 
@@ -85,4 +88,5 @@ $$P(\text{clip})=\beta^{\alpha_{\text{auto}}}, \text{where}\ 0<\beta<1 \text{ an
 #### <a name="QuadraticStochAutoClip"></a>	Quadratic Stoch Auto Clipping
 about this clipping methods  
 $$P(\text{clip})=\beta^{\alpha_{\text{auto}}^2}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{auto}}$$
+
 -----------
