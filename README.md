@@ -44,22 +44,25 @@ Graph-Node classifcation on Reddit node dataset and custom GraphConv model:
 #### <a name="NormClip"></a> Norm Clipping
 about this clipping methods
 $$\alpha_{norm} = {\frac{\eta}{||\nabla f(x^k, \xi^k)||_2}}$$
+
 -----------
 
 #### <a name="LinearStochNormClip"></a> Linear Stoch Norm Clipping
 about this clipping methods
 $$P(\text{clip})=\beta^{\alpha_{\text{norm}}}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{norm}}$$
+
 -----------
 
 #### <a name="QuadraticStochNormClip"></a>	Quadratic Stoch Norm Clipping
 about this clipping methods  
 $$P(\text{clip})=\beta^{\alpha_{\text{norm}}^2},\text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{norm}}$$
+
 -----------
 
 #### <a name="LayerWiseClip"></a>	Layer Wise Clipping
 about this clipping methods  
 
-$$\alpha_{\text{layer}} = \frac{\eta}{||\nabla_{w_{layer}} f(x^k,\xi^k)||_2}, \text{where}\ {w_{layer}}$$
+$$\alpha_{\text{layer}} = \frac{\eta}{||\nabla_{w_{l}} f(x^k,\xi^k)||_2}, \text{where}\ w_l - \text{ weights of current layer in neural network}\ $$
 
 -----------
 
@@ -85,4 +88,23 @@ $$P(\text{clip})=\beta^{\alpha_{\text{auto}}}, \text{where}\ 0<\beta<1 \text{ an
 #### <a name="QuadraticStochAutoClip"></a>	Quadratic Stoch Auto Clipping
 about this clipping methods  
 $$P(\text{clip})=\beta^{\alpha_{\text{auto}}^2}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{auto}}$$
+
 -----------
+
+
+### Use Example  
+You can use our optimizers as well as all the standard optimizers from the pytorch library  
+```python
+from torch_optim.optimizers import clipped_SGD
+
+optimizer = clipped_SGD(lr=5e-2, momentum=0.9, clipping_type="layer_wise", clipping_level=1)
+loss = my_loss_function
+for epoch in range(EPOCHS):
+    for i, data in enumerate(train_loader, 0):
+        outputs = net(inputs)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+        optimizer.zero_grad()
+
+```
