@@ -40,6 +40,9 @@ We conducted a study to study the quality of our clipping methods on a number of
 #### Graph-Node classifcation on Reddit node dataset and custom GraphConv model:  
 ![This is an image](readme_images/graph-node-classification.jpg) 
 
+<br>
+<br>
+<br>
 
 #### <a name="NormClip"></a> Norm Clipping
 about this clipping methods
