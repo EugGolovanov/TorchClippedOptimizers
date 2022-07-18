@@ -66,6 +66,7 @@ $$\alpha_w = \frac{\eta}{|\frac{\partial f}{\partial w}(x^k, \xi^k)|}, \text{whe
 -----------
 
 #### <a name="AutoClip"></a>	Auto Clipping
+
 about this clipping methods
 $$\alpha_{\text{auto}} = \frac{\eta(p)}{||\nabla f(x^k,\xi^k)||_2}, \text{where}\  0 < p \leq 1 \text{ and}\ \eta(p) - \text{p-th percentile}\$$
 
