@@ -17,7 +17,7 @@ you can install our library using pip:
 In the last few years, for various neural network training models (for example, BERT + CoLA), it has been found that in the case of "large stochastic gradients", it is advantageous to use special clipping (clipping/normalization) of the batched gradient. Since all modern machine learning, one way or another, ultimately boils down to stochastic optimization problems, the question of exactly how to "clip" large values of patched gradients plays a key role in the development of effective numerical training methods for a large class of models. This repository implements optimizers for the pytorch library with different clipping methods.
 
 
-### our clipping methods
+### Our clipping methods
 
 + [Norm Clipping](#NormClip)
 + [Linear Stoch Norm Clipping](#LinearStochNormClip);  
@@ -41,43 +41,43 @@ Graph-Node classifcation on Reddit node dataset and custom GraphConv model:
 ![This is an image](readme_images/graph-node-classification.jpg) 
 
 
-##### <a name="NormClip"></a> Norm Clipping
+#### <a name="NormClip"></a> Norm Clipping
 about this clipping methods
 $$\alpha_{norm} = {\frac{\eta}{||\nabla f(x^k, \xi^k)||_2}}$$
 -----------
 
-##### <a name="LinearStochNormClip"></a> Linear Stoch Norm Clipping
+#### <a name="LinearStochNormClip"></a> Linear Stoch Norm Clipping
 about this clipping methods
 $$P(\text{clip})=\beta^{\alpha_{\text{norm}}}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{norm}}$$
 -----------
 
-##### <a name="QuadraticStochNormClip"></a>	Quadratic Stoch Norm Clipping
+#### <a name="QuadraticStochNormClip"></a>	Quadratic Stoch Norm Clipping
 about this clipping methods  
 $$P(\text{clip})=\beta^{\alpha_{\text{norm}}^2},\text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{norm}}$$
 -----------
 
-##### <a name="LayerWiseClip"></a>	Layer Wise Clipping
+#### <a name="LayerWiseClip"></a>	Layer Wise Clipping
 about this clipping methods  
-$$\alpha_{layer}=\frac{\eta}{||\nabla_{w_{layer}}f(x^k,\xi^k)||_2},\text{where}\ w_{layer} - \text{weights of current layer of neural network}$$
+$$\alpha_{layer}=\frac{\eta}{||\nabla_{w_{layer}}f(x^k,\xi^k)||_2},\text{where}\ w_{layer}-\text{weights of current layer of neural network}$$
 -----------
 
-##### <a name="CoordWiseClip"></a>	Coordinate Wise Clipping
+#### <a name="CoordWiseClip"></a>	Coordinate Wise Clipping
 about this clipping methods
 $$\alpha_w = \frac{\eta}{|\frac{\partial f}{\partial w}(x^k, \xi^k)|}, \text{where}\ w - \text{current model's parameter}\$$
 -----------
 
-##### <a name="AutoClip"></a>	Auto Clipping
+#### <a name="AutoClip"></a>	Auto Clipping
 about this clipping methods
 $$\alpha_{\text{auto}} = \frac{\eta(p)}{||\nabla f(x^k,\xi^k)||_2}, \text{where}\  0 < p \leq 1 \text{ and}\ \eta(p) - \text{p-th percentile}\$$
 
 -----------
 
-##### <a name="LinearStochAutoClip"></a>	Linear Stoch Auto Clipping
+#### <a name="LinearStochAutoClip"></a>	Linear Stoch Auto Clipping
 about this clipping methods  
 $$P(\text{clip})=\beta^{\alpha_{\text{auto}}}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{auto}} $$
 -----------
 
-##### <a name="QuadraticStochAutoClip"></a>	Quadratic Stoch Auto Clipping
+#### <a name="QuadraticStochAutoClip"></a>	Quadratic Stoch Auto Clipping
 about this clipping methods  
 $$P(\text{clip})=\beta^{\alpha_{\text{auto}}^2}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{auto}}$$
 -----------
