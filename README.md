@@ -42,25 +42,27 @@ We conducted a study to study the quality of our clipping methods on a number of
 
 <br>
 <br>
-<br>
 
 #### <a name="NormClip"></a> Norm Clipping
 about this clipping methods
 $$\alpha_{norm} = {\frac{\eta}{||\nabla f(x^k, \xi^k)||_2}}$$
 
 -----------
+<br>
 
 #### <a name="LinearStochNormClip"></a> Linear Stoch Norm Clipping
 about this clipping methods
 $$P(\text{clip})=\beta^{\alpha_{\text{norm}}}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{norm}}$$
 
 -----------
+<br>
 
 #### <a name="QuadraticStochNormClip"></a>	Quadratic Stoch Norm Clipping
 about this clipping methods  
 $$P(\text{clip})=\beta^{\alpha_{\text{norm}}^2},\text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{norm}}$$
 
 -----------
+<br>
 
 #### <a name="LayerWiseClip"></a>	Layer Wise Clipping
 about this clipping methods  
@@ -68,6 +70,7 @@ about this clipping methods
 $$\alpha_{\text{layer}} = \frac{\eta}{||\nabla_{w_{l}} f(x^k,\xi^k)||_2}, \text{where}\ w_l - \text{ weights of current layer in neural network}\ $$
 
 -----------
+<br>
 
 #### <a name="CoordWiseClip"></a>	Coordinate Wise Clipping
 about this clipping methods
@@ -75,25 +78,28 @@ about this clipping methods
 $$\alpha_w = \frac{\eta}{|\frac{\partial f}{\partial w}(x^k, \xi^k)|},  w - \text{current model's parameter}\$$
 
 -----------
+<br>
 
 #### <a name="AutoClip"></a>	Auto Clipping
 about this clipping methods
 $$\alpha_{\text{auto}} = \frac{\eta(p)}{||\nabla f(x^k,\xi^k)||_2}, \text{where}\  0 < p \leq 1 \text{ and}\ \eta(p) - \text{p-th percentile}\$$
 
 -----------
+<br>
 
 #### <a name="LinearStochAutoClip"></a>	Linear Stoch Auto Clipping
 about this clipping methods  
 $$P(\text{clip})=\beta^{\alpha_{\text{auto}}}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{auto}} $$
 
 -----------
+<br>
 
 #### <a name="QuadraticStochAutoClip"></a>	Quadratic Stoch Auto Clipping
 about this clipping methods  
 $$P(\text{clip})=\beta^{\alpha_{\text{auto}}^2}, \text{where}\ 0<\beta<1 \text{ and}\ \alpha = \alpha_{\text{auto}}$$
 
 -----------
-
+<br>
 
 ### Use Example  
 You can use our optimizers as well as all the standard optimizers from the pytorch library  
