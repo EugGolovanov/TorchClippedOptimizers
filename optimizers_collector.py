@@ -1,6 +1,7 @@
+from typing import List
+
 import torch
 from torch.optim import Adam
-from typing import List
 
 """
 from optimizers_collector import OptimizerProperties, OptimizersCollector
@@ -23,8 +24,10 @@ bs_muls = collector.bs_muls
 lr_decays = collector.lr_decays
 """
 
+
 class OptimizerProperties:
     """Класс для хранения класса и параметров инициализации оптимизатора"""
+
     def __init__(self, optimizer_class, **kwargs):
         self.optimizer_class = optimizer_class
         self.optimizer_kwargs = kwargs
@@ -38,7 +41,9 @@ class ModelProperties:
         self.model = model_class
         self.model_kwargs = kwargs
 
+
 tmp = OptimizerProperties(optimizer_class=Adam)
+
 
 class OptimizersCollector:
     def __init__(self, model_properties: ModelProperties, optimizers_properties: List[OptimizerProperties],
