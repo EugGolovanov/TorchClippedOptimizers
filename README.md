@@ -58,7 +58,7 @@ $$P(\text{clip})=\beta^{\alpha_{\text{norm}}^2},\text{where}\ 0<\beta<1 \text{ a
 
 #### <a name="LayerWiseClip"></a>	Layer Wise Clipping
 about this clipping methods  
-$$\alpha_{\text{layer}} = \frac{\eta}{||\nabla f(x^k,\xi^k)||_2} \text{where}\ w_{layer} - \text{ weights of current layer of neural network}$$
+$$\alpha_{\text{layer}} = \frac{\eta}{||\nabla f(x^k,\xi^k)||_2} \text{where}\ \alpha_{\text{auto}} - \text{ weights of current layer of neural network}$$
 
 #### <a name="CoordWiseClip"></a>	Coordinate Wise Clipping
 about this clipping methods
