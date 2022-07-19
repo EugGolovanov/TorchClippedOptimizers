@@ -8,7 +8,6 @@ from copy import deepcopy
 import numpy as np
 import torch
 from tqdm import tqdm
-from typing import List
 
 AUTO_CLIP_TYPES = ['auto_clip', 'linear_rand_autoclip', 'quadratic_rand_autoclip']
 

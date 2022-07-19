@@ -56,6 +56,7 @@ class ClippedSGD(Optimizer):
             clipping_type='no_clip',
             clipping_level=1.0,
             beta=0,
+            do_restarts=False,
             **kwargs
     ):
         if lr < 0.0:
@@ -81,12 +82,15 @@ class ClippedSGD(Optimizer):
         defaults = dict(
             lr=lr,
             momentum=momentum,
-            clipping_type=clipping_type, clipping_level=clipping_level
+            clipping_type=clipping_type,
+            clipping_level=clipping_level,
+            do_restarts=do_restarts
         )
 
         kwargs['clipping_type'] = clipping_type
         kwargs['clipping_level'] = clipping_level
         kwargs['beta'] = beta
+        kwargs['do_restarts'] = do_restarts
 
         self.grad_desc_step = get_clipped_grad_desc_step(**kwargs)
         super().__init__(params, defaults)
