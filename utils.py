@@ -33,8 +33,6 @@ class GradHistory:
 
         self.all_grad_lens = []
 
-        self.coords_in_restart = []
-
     def get_grad_len(self) -> float:
         """Calculates p-th percentile of all gradients' lengths
         """
@@ -58,27 +56,6 @@ class GradHistory:
         """Returns whole gradients' lengths history
         """
         return self.all_grad_lens
-
-    def add_coords(self, coords: List[torch.Tensor]) -> None:
-        self.coords_in_restart.append([])
-        append_coords = deepcopy(coords)
-        for param in append_coords:
-            param.requires_grad = False
-            self.coords_in_restart[-1].append(param.detach().cpu())
-
-    def get_mean_coords(self) -> list:
-        """Calculates all mean coordinates in current restart
-        """
-        mean_coords = []
-        num_restarts = len(self.coords_in_restart)
-        for i in range(len(num_restarts)):
-            mean_coords.append(sum([coords[i] for coords in self.coords_in_restart]) / num_restarts)
-        return mean_coords
-
-    def empty_coords(self) -> None:
-        """Deletes all coordinates in self.coords_in_restart list
-        """
-        self.coords_in_restart = []
 
 
 def recursive_to(param, device):
