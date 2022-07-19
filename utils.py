@@ -8,9 +8,12 @@ from copy import deepcopy
 import numpy as np
 import torch
 from tqdm import tqdm
+from typing import List
+
+AUTO_CLIP_TYPES = ['auto_clip', 'linear_rand_autoclip', 'quadratic_rand_autoclip']
 
 
-class GradLenHistory:
+class GradHistory:
     """Data structure with adaptive API for efficient saving gradients' lengths history
     and calculating its p-th percentile
     Args:
@@ -18,7 +21,7 @@ class GradLenHistory:
         p_autoclip (float): p-th percentile for auto-clip clipping methods
     """
 
-    def __init__(self, clipping_type: str, p_autoclip: float = 0.75):
+    def __init__(self, clipping_type: str, p_autoclip: float = 0.75) -> None:
         if p_autoclip <= 0 or p_autoclip > 1:  # 0 < p_autoclip ≤ 1
             raise ValueError('Invalid p_autoclip value (expected value between 0 and 1)')
 
@@ -30,74 +33,52 @@ class GradLenHistory:
 
         self.all_grad_lens = []
 
-    def get_grad_len(self):
+        self.coords_in_restart = []
+
+    def get_grad_len(self) -> float:
         """Calculates p-th percentile of all gradients' lengths
         """
         return -self.heap[0]
 
-    def add_grad_len(self, grad_len):
+    def add_grad_len(self, grad_len) -> None:
         """Adds length of new gradient to the data structures
         Args:
             grad_len (float): length of new gradient
         """
-        self.all_grad_lens.append(grad_len)
+        self.all_grad_lens.append(deepcopy(grad_len))
 
         if self.clipping_type in AUTO_CLIP_TYPES:
 
             if len(self.heap) / len(self.all_grad_lens) < self.p_autoclip:
-                hp.heappush(self.heap, -grad_len)
+                hp.heappush(self.heap, -deepcopy(grad_len))
             elif grad_len < -self.heap[0]:
-                hp.heappushpop(self.heap, -grad_len)
+                hp.heappushpop(self.heap, -deepcopy(grad_len))
 
-    def get_history(self) -> list:
+    def get_len_history(self) -> list:
         """Returns whole gradients' lengths history
         """
         return self.all_grad_lens
 
+    def add_coords(self, coords: List[torch.Tensor]) -> None:
+        self.coords_in_restart.append([])
+        append_coords = deepcopy(coords)
+        for param in append_coords:
+            param.requires_grad = False
+            self.coords_in_restart[-1].append(param.detach().cpu())
 
-class _RequiredParameter:
-    """Singleton class representing a required parameter for an Optimizer."""
+    def get_mean_coords(self) -> list:
+        """Calculates all mean coordinates in current restart
+        """
+        mean_coords = []
+        num_restarts = len(self.coords_in_restart)
+        for i in range(len(num_restarts)):
+            mean_coords.append(sum([coords[i] for coords in self.coords_in_restart]) / num_restarts)
+        return mean_coords
 
-    def __repr__(self):
-        return "<required parameter>"
-
-
-class _DependingParameter:
-    """Singleton class representing a parameter that depends on other for an Optimizer."""
-
-    def __init__(self, other_parameter_name):
-        self.other_parameter_name = other_parameter_name
-
-    def __repr__(self):
-        return f"<depends on {self.other_parameter_name}>"
-
-
-def get_clipped_grad_desc_step(**kwargs):
-    """Returns appropriate clipping class according to provided clipping method
-    Keyword arguments:
-        clipping_type (string): type of clipping defining appropriate get_alpha() method
-        clipping_level (float): coefficient for constant clipping methods
-        p_autoclip (float): p-th percentile for auto-clip clipping methods
-        beta (float): basis of clipping probability in random clipping methods
-    """
-    type_class = {
-        'no_clip': NoClip,
-        'norm': NormClip,
-        'layer_wise': LayerWiseClip,
-        'coordinate_wise': CoordWiseClip,
-        'auto_clip': AutoClip,
-        'linear_rand_autoclip': LinearRandAutoClip,
-        'quadratic_rand_autoclip': QuadraticRandAutoClip,
-        'linear_rand_norm': LinearRandNormClip,
-        'quadratic_rand_norm': QuadraticRandNormClip
-    }
-
-    try:
-        clipping_class = type_class[kwargs['clipping_type']]
-    except KeyError:
-        raise TypeError(f'No clipping type called {kwargs["clipping_type"]}')
-    else:
-        return clipping_class(**kwargs)
+    def empty_coords(self) -> None:
+        """Deletes all coordinates in self.coords_in_restart list
+        """
+        self.coords_in_restart = []
 
 
 def recursive_to(param, device):
