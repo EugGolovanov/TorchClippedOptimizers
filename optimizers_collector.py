@@ -49,7 +49,6 @@ class RestartProperties:
 
     def __init__(self, restart_class, first_restart_steps_cnt=100, restart_coef=1.5, max_steps_cnt=5000):
         self.restart_class = restart_class
-        self.model_kwargs = kwargs
         self.first_restart_steps_cnt = first_restart_steps_cnt
         self.restart_coef = restart_coef
         self.max_steps_cnt = max_steps_cnt
