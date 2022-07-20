@@ -133,4 +133,3 @@ class OptimizersCollectorWithRestarts(OptimizersCollector):
 
     def get_restarters(self):
         return self.restarters
-
