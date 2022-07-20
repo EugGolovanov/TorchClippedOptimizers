@@ -28,8 +28,10 @@ lr_decays = collector.lr_decays
 
 class OptimizerProperties:
     """A class for storing the class and initialization parameters of the optimizer"""
-    def __init__(self, optimizer_class, **kwargs):
+
+    def __init__(self, optimizer_class, do_restarts=False, **kwargs):
         self.optimizer_class = optimizer_class
+        self.do_restarts = do_restarts
         self.optimizer_kwargs = kwargs
 
     def get_optimizer(self, **kwargs):
@@ -41,7 +43,7 @@ class ModelProperties:
         self.model = model_class
         self.model_kwargs = kwargs
 
-        
+
 class OptimizersCollector:
     def __init__(self, model_properties: ModelProperties, optimizers_properties: List[OptimizerProperties],
                  start_point_random_seed=42, history_random_seed=42, **kwargs):
@@ -91,26 +93,34 @@ class OptimizersCollector:
 
     def init_optimizers_objects(self):
         self.opts = [i.optimizer_class(self.nets[ind].parameters(), **i.optimizer_kwargs)
-                for ind, i in enumerate(self.optimizers_properties)]
+                     for ind, i in enumerate(self.optimizers_properties)]
 
     def get_optimizer_objects(self):
         return self.opts
+
+    def get_nets(self):
+        return self.nets
 
 
 class OptimizersCollectorWithRestarts(OptimizersCollector):
     """A class for initializing optimizers and restarters for training
     """
-    def __init__(self, model_properties: ModelProperties, optimizers_properties: List[OptimizerProperties],
-                 restart_class, bool_mask_use_restart,
-                 start_point_random_seed=42, history_random_seed=42, **kwargs):
-        assert len(optimizers_properties) == len(bool_mask_use_restart), \
-            "Len of lists optimizers and mask must be equal"
 
+    def __init__(self, model_properties: ModelProperties, optimizers_properties: List[OptimizerProperties],
+                 restart_class, start_point_random_seed=42, history_random_seed=42, **kwargs):
         super().__init__(model_properties, optimizers_properties,
                          start_point_random_seed, history_random_seed, **kwargs)
 
-        self.restarters = [restart_class(self.opts[i]) if bool_mask_use_restart[i] else None
-                           for i in range(len(optimizers_properties))]
+        self.bool_mask_use_restart = [optimizer_property.do_restarts
+                                      for optimizer_property in optimizers_properties]
+
+        self.restarters = [restart_class(opt_prop) if flag_use_restart else None
+                           for opt_prop, flag_use_restart in zip(optimizers_properties, self.bool_mask_use_restart)]
 
     def get_restarters(self):
         return self.restarters
+
+# TODO: add RestartProperties
+# first_restart_steps_cnt: int = 100
+# restart_coeff: float = 1.5
+# max_steps_cnt: int = 5000
