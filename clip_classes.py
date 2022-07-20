@@ -7,7 +7,9 @@ from typing import List, Optional
 import torch
 from torch import Tensor
 
-from utils import GradHistory, AUTO_CLIP_TYPES
+from utils import GradLenHistory
+
+AUTO_CLIP_TYPES = ['auto_clip', 'linear_rand_autoclip', 'quadratic_rand_autoclip']
 
 
 class NoClip:
@@ -22,16 +24,12 @@ class NoClip:
         self.kwargs = kwargs
 
         if kwargs['clipping_type'] in AUTO_CLIP_TYPES:
-            self.grad_history = GradHistory(kwargs['clipping_type'], kwargs['p_autoclip'])
+            self.grad_history = GradLenHistory(kwargs['clipping_type'], kwargs['p_autoclip'])
         else:
-            self.grad_history = GradHistory(kwargs['clipping_type'])
+            self.grad_history = GradLenHistory(kwargs['clipping_type'])
 
     def get_alpha(self, **kwargs):
         """Method that calculates clipping coefficient with no-clip version
-        Keyword Arguments:
-            clipping_level (float): coefficient for constant clipping methods
-            p_autoclip (float): p-th percentile for auto-clip clipping methods
-            beta (float): basis of clipping probability in random clipping methods
         """
         return 1
 
@@ -39,7 +37,7 @@ class NoClip:
                  params: List[Tensor],
                  d_p_list: List[Tensor],
                  momentum_buffer_list: List[Optional[Tensor]],
-                 lr: float,
+                 l_r: float,
                  momentum: float,
                  clipping_type: str,
                  clipping_level: float):
@@ -71,11 +69,10 @@ class NoClip:
 
             alpha = self.get_alpha(d_p=d_p, grad_norm=grad_norm, clipping_level=clipping_level,
                                    beta=self.kwargs['beta'])
-
             if clipping_type == 'coordinate_wise':
-                param.add_(-lr * alpha * d_p)
+                param.add_(-l_r * alpha * d_p)
             else:
-                param.add_(d_p, alpha=-lr * alpha)
+                param.add_(d_p, alpha=-l_r * alpha)
 
 
 class NormClip(NoClip):
@@ -116,7 +113,7 @@ class LinearRandNormClip(NoClip):
         grad_norm = kwargs['grad_norm']
 
         prob = pow(beta, clipping_level / grad_norm)
-        clip = bool(torch.rand(1) < prob.cpu())
+        clip = bool(torch.rand(1) < prob)
 
         if not clip or clipping_level > grad_norm:
             return 1
@@ -142,7 +139,7 @@ class QuadraticRandNormClip(NoClip):
         grad_norm = kwargs['grad_norm']
 
         prob = pow(beta, (clipping_level / grad_norm) ** 2)
-        clip = bool(torch.rand(1) < prob.cpu())
+        clip = bool(torch.rand(1) < prob)
 
         if not clip or clipping_level > grad_norm:
             return 1
@@ -204,7 +201,6 @@ class AutoClip(NoClip):
     def get_alpha(self, **kwargs):
         """Method that calculates clipping coefficient with auto-clip version
         """
-        print('Here!')
         grad_norm_p = self.grad_history.get_grad_len()
         grad_norm = kwargs['grad_norm']
         return min(1, grad_norm_p / grad_norm)
@@ -229,7 +225,7 @@ class LinearRandAutoClip(NoClip):
         grad_norm = kwargs['grad_norm']
 
         prob = pow(beta, grad_norm_p / grad_norm)
-        clip = bool(torch.rand(1) < prob.cpu())
+        clip = bool(torch.rand(1) < prob)
 
         if not clip or grad_norm_p > grad_norm:
             return 1
@@ -255,36 +251,8 @@ class QuadraticRandAutoClip(NoClip):
         grad_norm = kwargs['grad_norm']
 
         prob = pow(beta, (grad_norm_p / grad_norm) ** 2)
-        clip = bool(torch.rand(1) < prob.cpu())
+        clip = bool(torch.rand(1) < prob)
 
         if not clip or grad_norm_p > grad_norm:
             return 1
         return min(1, grad_norm_p / grad_norm)
-
-
-def get_clipped_grad_desc_step(**kwargs):
-    """Returns appropriate clipping class according to provided clipping method
-    Keyword arguments:
-        clipping_type (string): type of clipping defining appropriate get_alpha() method
-        clipping_level (float): coefficient for constant clipping methods
-        p_autoclip (float): p-th percentile for auto-clip clipping methods
-        beta (float): basis of clipping probability in random clipping methods
-    """
-    type_class = {
-        'no_clip': NoClip,
-        'norm': NormClip,
-        'layer_wise': LayerWiseClip,
-        'coordinate_wise': CoordWiseClip,
-        'auto_clip': AutoClip,
-        'linear_rand_autoclip': LinearRandAutoClip,
-        'quadratic_rand_autoclip': QuadraticRandAutoClip,
-        'linear_rand_norm': LinearRandNormClip,
-        'quadratic_rand_norm': QuadraticRandNormClip
-    }
-
-    try:
-        clipping_class = type_class[kwargs['clipping_type']]
-    except KeyError:
-        raise TypeError(f'No clipping type called {kwargs["clipping_type"]}')
-    else:
-        return clipping_class(**kwargs)

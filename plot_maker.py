@@ -13,7 +13,6 @@ class PlotMaker:
     """
 
     font_dict = {'fontsize': 14, 'fontweight': 'medium'}
-
     def __init__(self, main_title, names_optimizers, metric_name="accuracy", loss_name=""):
         """
         :param main_title: title for the entire graph
