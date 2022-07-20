@@ -97,7 +97,7 @@ class OptimizersCollector:
         return self.opts
 
 
-class optimizersCollectorWithRestarts(OptimizersCollector):
+class OptimizersCollectorWithRestarts(OptimizersCollector):
     """A class for initializing optimizers and restarters for training
     """
     def __init__(self, model_properties: ModelProperties, optimizers_properties: List[OptimizerProperties],
