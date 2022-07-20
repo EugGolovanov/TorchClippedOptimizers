@@ -44,7 +44,7 @@ class ModelProperties:
         
 class OptimizersCollector:
     def __init__(self, model_properties: ModelProperties, optimizers_properties: List[OptimizerProperties],
-                 starting_point_random_seed=42, history_random_seed=42, **kwargs):
+                 start_point_random_seed=42, history_random_seed=42, **kwargs):
         """
             A class for initializing optimizers and getting their parameters
             bs_murs and lr_decays can be passed to kwargs,
@@ -63,7 +63,7 @@ class OptimizersCollector:
             self.lr_decays = kwargs["lr_decays"]
 
         for _ in range(len(self.optimizers_properties)):
-            torch.manual_seed(starting_point_random_seed)
+            torch.manual_seed(start_point_random_seed)
             self.nets.append(model_properties.model(**model_properties.model_kwargs))
             self.nets[-1].zero_grad()
             self.nets[-1].train()
@@ -102,12 +102,12 @@ class OptimizersCollectorWithRestarts(OptimizersCollector):
     """
     def __init__(self, model_properties: ModelProperties, optimizers_properties: List[OptimizerProperties],
                  restart_class, bool_mask_use_restart,
-                 starting_point_random_seed=42, history_random_seed=42, **kwargs):
+                 start_point_random_seed=42, history_random_seed=42, **kwargs):
         assert len(optimizers_properties) == len(bool_mask_use_restart), \
             "Len of lists optimizers and mask must be equal"
 
         super().__init__(model_properties, optimizers_properties,
-                 starting_point_random_seed, history_random_seed, **kwargs)
+                         start_point_random_seed, history_random_seed, **kwargs)
 
         self.restarters = [restart_class(self.opts[i]) if bool_mask_use_restart[i] else None
                            for i in range(len(optimizers_properties))]
