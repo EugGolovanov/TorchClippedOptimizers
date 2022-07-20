@@ -44,7 +44,7 @@ class ModelProperties:
         self.model = model_class
         self.model_kwargs = kwargs
 
-
+        
 class OptimizersCollector:
     def __init__(self, model_properties: ModelProperties, optimizers_properties: List[OptimizerProperties],
                  starting_point_random_seed=42, history_random_seed=42, **kwargs):
