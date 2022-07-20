@@ -39,10 +39,26 @@ class OptimizerProperties:
 
 
 class ModelProperties:
+    """A class for storing the class and initialization parameters of the model"""
+
     def __init__(self, model_class, **kwargs):
         self.model = model_class
         self.model_kwargs = kwargs
 
+class RestartProperties:
+    """A class for storing the class and initialization parameters of the restart object"""
+
+    def __init__(self, restart_class, first_restart_steps_cnt=100, restart_coef=1.5, max_steps_cnt=5000):
+        self.restart_class = restart_class
+        self.model_kwargs = kwargs
+        self.first_restart_steps_cnt = first_restart_steps_cnt
+        self.restart_coef = restart_coef
+        self.max_steps_cnt = max_steps_cnt
+
+    def get_kwargs(self):
+        return {"first_restart_steps_cnt": self.first_restart_steps_cnt,
+                "restart_coef": self.restart_coef,
+                "max_steps_cnt": self.max_steps_cnt}
 
 class OptimizersCollector:
     def __init__(self, model_properties: ModelProperties, optimizers_properties: List[OptimizerProperties],
@@ -107,20 +123,18 @@ class OptimizersCollectorWithRestarts(OptimizersCollector):
     """
 
     def __init__(self, model_properties: ModelProperties, optimizers_properties: List[OptimizerProperties],
-                 restart_class, start_point_random_seed=42, history_random_seed=42, **kwargs):
+                 restart_properties: List[RestartProperties], start_point_random_seed=42, history_random_seed=42, **kwargs):
         super().__init__(model_properties, optimizers_properties,
                          start_point_random_seed, history_random_seed, **kwargs)
 
         self.bool_mask_use_restart = [optimizer_property.do_restarts
                                       for optimizer_property in optimizers_properties]
 
-        self.restarters = [restart_class(opt_prop) if flag_use_restart else None
-                           for opt_prop, flag_use_restart in zip(optimizers_properties, self.bool_mask_use_restart)]
+        self.restarters = [restart_properties.restart_class(opt_prop, **restart_properties.get_kwargs())
+                           if flag_use_restart else None
+                           for restart_properties, opt_prop, flag_use_restart
+                           in zip(restart_properties, optimizers_properties, self.bool_mask_use_restart)]
 
     def get_restarters(self):
         return self.restarters
 
-# TODO: add RestartProperties
-# first_restart_steps_cnt: int = 100
-# restart_coeff: float = 1.5
-# max_steps_cnt: int = 5000
