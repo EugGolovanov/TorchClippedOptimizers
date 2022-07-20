@@ -44,19 +44,21 @@ class ModelProperties:
         self.model = model_class
         self.model_kwargs = kwargs
 
+
 class RestartProperties:
     """A class for storing the class and initialization parameters of the restart object"""
 
-    def __init__(self, restart_class, first_restart_steps_cnt=100, restart_coef=1.5, max_steps_cnt=5000):
+    def __init__(self, restart_class, first_restart_steps_cnt=100, restart_coeff=1.5, max_steps_cnt=5000):
         self.restart_class = restart_class
         self.first_restart_steps_cnt = first_restart_steps_cnt
-        self.restart_coef = restart_coef
+        self.restart_coeff = restart_coeff
         self.max_steps_cnt = max_steps_cnt
 
     def get_kwargs(self):
         return {"first_restart_steps_cnt": self.first_restart_steps_cnt,
-                "restart_coef": self.restart_coef,
+                "restart_coeff": self.restart_coeff,
                 "max_steps_cnt": self.max_steps_cnt}
+
 
 class OptimizersCollector:
     def __init__(self, model_properties: ModelProperties, optimizers_properties: List[OptimizerProperties],
@@ -121,7 +123,8 @@ class OptimizersCollectorWithRestarts(OptimizersCollector):
     """
 
     def __init__(self, model_properties: ModelProperties, optimizers_properties: List[OptimizerProperties],
-                 restart_properties: List[RestartProperties], start_point_random_seed=42, history_random_seed=42, **kwargs):
+                 restart_properties: List[RestartProperties], start_point_random_seed=42, history_random_seed=42,
+                 **kwargs):
         super().__init__(model_properties, optimizers_properties,
                          start_point_random_seed, history_random_seed, **kwargs)
 

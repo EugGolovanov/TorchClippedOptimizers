@@ -9,12 +9,12 @@ from utils import recursive_to
 
 class Restarter:
     def __init__(self, optimizer_properties: OptimizerProperties,
-                 num_cur_restart=100, restart_coeff=1.5, max_restart_cnt=5000) -> None:
+                 first_restart_steps_cnt=100, restart_coeff=1.5, max_steps_cnt=5000) -> None:
         self.optimizer_class = optimizer_properties.optimizer_class
         self.optimizer_kwargs = optimizer_properties.optimizer_kwargs
-        self.num_cur_restart = num_cur_restart
+        self.num_cur_restart = first_restart_steps_cnt
         self.restart_coeff = restart_coeff
-        self.max_restart_cnt = max_restart_cnt
+        self.max_restart_cnt = max_steps_cnt
 
         self.coords_in_restart = []
 
