@@ -125,10 +125,11 @@ class OptimizersCollectorWithRestarts(OptimizersCollector):
         super().__init__(model_properties, optimizers_properties,
                          start_point_random_seed, history_random_seed, **kwargs)
 
-        self.restarters = [restart_properties.restart_class(opt_prop, **restart_properties.get_kwargs())
-                           if restart_properties else None
-                           for restart_properties, opt_prop, flag_use_restart
-                           in zip(restart_properties, optimizers_properties, self.bool_mask_use_restart)]
+        self.restart_properties = restart_properties
+        self.restarters = [restart_property.restart_class(opt_prop, **restart_property.get_kwargs())
+                           if restart_property else None
+                           for restart_property, opt_prop
+                           in zip(self.restart_properties, optimizers_properties)]
 
     def get_restarters(self):
         return self.restarters
