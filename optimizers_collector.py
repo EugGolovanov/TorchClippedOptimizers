@@ -29,9 +29,8 @@ lr_decays = collector.lr_decays
 class OptimizerProperties:
     """A class for storing the class and initialization parameters of the optimizer"""
 
-    def __init__(self, optimizer_class, do_restarts=False, **kwargs):
+    def __init__(self, optimizer_class, **kwargs):
         self.optimizer_class = optimizer_class
-        self.do_restarts = do_restarts
         self.optimizer_kwargs = kwargs
 
     def get_optimizer(self, **kwargs):
@@ -127,11 +126,8 @@ class OptimizersCollectorWithRestarts(OptimizersCollector):
         super().__init__(model_properties, optimizers_properties,
                          start_point_random_seed, history_random_seed, **kwargs)
 
-        self.bool_mask_use_restart = [optimizer_property.do_restarts
-                                      for optimizer_property in optimizers_properties]
-
         self.restarters = [restart_properties.restart_class(opt_prop, **restart_properties.get_kwargs())
-                           if flag_use_restart else None
+                           if restart_properties else None
                            for restart_properties, opt_prop, flag_use_restart
                            in zip(restart_properties, optimizers_properties, self.bool_mask_use_restart)]
 
