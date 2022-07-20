@@ -114,3 +114,21 @@ class optimizersCollectorWithRestarts(OptimizersCollector):
 
     def get_restarters(self):
         return self.restarters
+
+class OptimizersCollectorWithRestarts(OptimizersCollector):
+    """A class for initializing optimizers and restarters for training
+    """
+    def __init__(self, model_properties: ModelProperties, optimizers_properties: List[OptimizerProperties],
+                 restart_class, bool_mask_use_restart,
+                 starting_point_random_seed=42, history_random_seed=42, **kwargs):
+        assert len(optimizers_properties) == len(bool_mask_use_restart), \
+            "Len of lists optimizers and mask must be equal"
+
+        super().__init__(model_properties, optimizers_properties,
+                 starting_point_random_seed, history_random_seed, **kwargs)
+
+        self.restarters = [restart_class(self.opts[i]) if bool_mask_use_restart[i] else None
+                           for i in range(len(optimizers_properties))]
+
+    def get_restarters(self):
+        return self.restarters
