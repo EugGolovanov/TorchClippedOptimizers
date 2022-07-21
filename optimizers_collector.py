@@ -97,7 +97,7 @@ class OptimizersCollector:
         self.opt_names = []
 
         for i in range(len(self.optimizers_properties)):
-            name = f"{self.optimizers_properties[i].optimizer_class.__name__};  "
+            name = f"{i}) {self.optimizers_properties[i].optimizer_class.__name__};  "
             for k, v in self.optimizers_properties[i].optimizer_kwargs.items():
                 name += f"{k}={v}, "
             name = name[:-2]
