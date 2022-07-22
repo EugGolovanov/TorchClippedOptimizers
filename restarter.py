@@ -65,7 +65,7 @@ class Restarter:
 
         if len(self.coords_in_restart) < self.max_restart_cnt:
             if len(self.coords_in_restart) > self.num_cur_restart:
-                print(f'Restart: {self.num_cur_restart}')
+                # print(f'Restart: {self.num_cur_restart}')
                 mean_coords = self.get_mean_coords()
 
                 for i, param in enumerate(model.parameters()):
@@ -78,7 +78,7 @@ class Restarter:
                 self.empty_coords()
                 new_optimizer = self.optimizer_class(model.parameters(), **self.optimizer_kwargs)
                 self.num_cur_restart = int(self.num_cur_restart * self.restart_coeff)
-                print('End Restart')
+                # print('End Restart')
                 return new_optimizer
 
         return optimizer
