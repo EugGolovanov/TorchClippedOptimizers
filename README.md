@@ -109,7 +109,7 @@ $$P(\text{clip})=\beta^{\alpha_{\text{auto}}^2}, \text{where}\ 0<\beta<1 \text{ 
 ### Use Example  
 You can use our optimizers as well as all the standard optimizers from the pytorch library  
 ```python
-from torch_optim.optimizers import clipped_SGD
+from torch_clip.optmizers import clipped_SGD
 
 optimizer = clipped_SGD(lr=5e-2, momentum=0.9, clipping_type="layer_wise", clipping_level=1)
 loss = my_loss_function
@@ -121,4 +121,32 @@ for epoch in range(EPOCHS):
         optimizer.step()
         optimizer.zero_grad()
 
+```
+
+
+### use Example (with restarts)
+
+```python
+from torch_clip.optimizers import clipped_SGD
+from torch_clip.restarter import Restarter
+from torch_clip.optimizers_collector import OptimizerProperties, ModelProperties, RestartProperties
+
+loss = my_loss_function
+model = my_model_object
+
+optimizer_props = OptimizerProperties(ClippedSGD, lr=5e-2, momentum=0.9, 
+                                      clipping_type="layer_wise", clipping_level=1)
+restarter = Restarter(optimizer_properties=optimizer_props, first_restart_steps_cnt=50,
+                      restart_coeff=1.25, max_steps_cnt=2000)
+optimizer = optimizer_props.optimizer_class(model.parameters(), **optimizer_props.optimizer_kwargs)
+
+for epoch in range(EPOCHS):
+    for i, data in enumerate(train_loader, 0):
+        outputs = model(inputs)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+        optimizer.zero_grad()
+        restarter.add_coords(model.parameters())
+        optimizers = restarter.make_restart(net, optimizer)
 ```

@@ -37,13 +37,6 @@ class OptimizerProperties:
         self.optimizer_class = optimizer_class
         self.optimizer_kwargs = kwargs
 
-    def get_optimizer(self, **kwargs):
-        """ Init a new optimizer object and returns it
-            Kwargs: all kwargs go to __init__ method
-            Return: optimizer object
-        """
-        return self.optimizer_class(**self.optimizer_kwargs, **kwargs)
-
 
 class ModelProperties:
     """ A class for storing the class and initialization parameters of the model
