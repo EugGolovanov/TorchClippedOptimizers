@@ -109,9 +109,9 @@ $$P(\text{clip})=\beta^{\alpha_{\text{auto}}^2}, \text{where}\ 0<\beta<1 \text{ 
 ### Use Example  
 You can use our optimizers as well as all the standard optimizers from the pytorch library  
 ```python
-from torch_clip.optmizers import clipped_SGD
+from torch_clip.optimizers import  ClippedSGD
+optimizer = ClippedSGD(model.parameters(), lr=5e-2, momentum=0.9, clipping_type="layer_wise", clipping_level=1)
 
-optimizer = clipped_SGD(lr=5e-2, momentum=0.9, clipping_type="layer_wise", clipping_level=1)
 loss = my_loss_function
 for epoch in range(EPOCHS):
     for i, data in enumerate(train_loader, 0):
@@ -127,7 +127,7 @@ for epoch in range(EPOCHS):
 ### use Example (with restarts)
 
 ```python
-from torch_clip.optimizers import clipped_SGD
+from torch_clip.optimizers import ClippedSGD
 from torch_clip.restarter import Restarter
 from torch_clip.optimizers_collector import OptimizerProperties, ModelProperties, RestartProperties
 
