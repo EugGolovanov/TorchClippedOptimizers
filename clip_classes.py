@@ -1,13 +1,11 @@
 """Submodule containing clipping classes with clipping and gradient coefficients calculation
 """
 
-
-from typing import List, Optional
-
 import torch
 from torch import Tensor
+from typing import List, Optional
 
-from utils import GradHistory, AUTO_CLIP_TYPES
+from .utils import GradHistory, AUTO_CLIP_TYPES
 
 
 class NoClip:

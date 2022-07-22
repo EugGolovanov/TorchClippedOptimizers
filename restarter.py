@@ -1,10 +1,9 @@
+import torch
 from copy import deepcopy
 from typing import List
 
-import torch
-
-from optimizers_collector import OptimizerProperties
-from utils import recursive_to
+from .optimizers_collector import OptimizerProperties
+from .utils import recursive_to
 
 
 class Restarter:

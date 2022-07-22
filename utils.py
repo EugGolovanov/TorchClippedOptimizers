@@ -1,13 +1,11 @@
 """Submodule containing auxiliary functions and data structures
 """
 
-
-import heapq as hp
-from copy import deepcopy
-
-import numpy as np
 import torch
+import heapq as hp
+import numpy as np
 from tqdm import tqdm
+from copy import deepcopy
 
 AUTO_CLIP_TYPES = ['auto_clip', 'linear_rand_autoclip', 'quadratic_rand_autoclip']
 

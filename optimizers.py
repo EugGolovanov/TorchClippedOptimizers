@@ -16,7 +16,7 @@
 
 from torch.optim import Optimizer
 
-from clip_classes import *
+from .clip_classes import *
 
 
 class ClippedSGD(Optimizer):
