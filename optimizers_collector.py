@@ -27,22 +27,41 @@ lr_decays = collector.lr_decays
 
 
 class OptimizerProperties:
-    """A class for storing the class and initialization parameters of the optimizer"""
+    """ A class for storing the class and initialization parameters of the optimizer
+        Args:
+            optimizer_class (class/func): callable object, what return optimizer object
+            kwargs: all kwargs passed to the initialization call of the optimizer
+    """
 
     def __init__(self, optimizer_class, **kwargs):
         self.optimizer_class = optimizer_class
         self.optimizer_kwargs = kwargs
 
     def get_optimizer(self, **kwargs):
+        """ Init a new optimizer object and returns it
+            Kwargs: all kwargs go to __init__ method
+            Return: optimizer object
+        """
         return self.optimizer_class(**self.optimizer_kwargs, **kwargs)
 
 
 class ModelProperties:
-    """A class for storing the class and initialization parameters of the model"""
+    """ A class for storing the class and initialization parameters of the model
+        Args:
+            optimizer_class (class/func): callable object, what return model object
+            kwargs: all kwargs passed to the initialization call of the model
+    """
 
     def __init__(self, model_class, **kwargs):
         self.model = model_class
         self.model_kwargs = kwargs
+
+    def get_model(self):
+        """ Init a new model object and returns it
+            Kwargs: all kwargs go to __init__ method
+            Return: model object
+        """
+        return self.model(**self.model_kwargs)
 
 
 class RestartProperties:
@@ -61,13 +80,19 @@ class RestartProperties:
 
 
 class OptimizersCollector:
+    """
+        A class for initializing optimizers and getting their objects
+        Args:
+            model_properties (ModelProperties object): object for init model
+            optimizers_properties (List[OptimizerProperties]): list of optimizer properties for init optimizers
+            starting_point_random_seed, history_random_seed (int): seeds for random torch
+        Kwargs:
+            bs_muls and lr_decays can be passed to kwargs,
+            by default they are automatically initialized with ones
+    """
+
     def __init__(self, model_properties: ModelProperties, optimizers_properties: List[OptimizerProperties],
                  start_point_random_seed=42, history_random_seed=42, **kwargs):
-        """
-            A class for initializing optimizers and getting their parameters
-            bs_murs and lr_decays can be passed to kwargs,
-            by default they are automatically initialized with ones
-        """
         self.optimizers_properties = optimizers_properties
         self.nets = []
 
@@ -82,7 +107,7 @@ class OptimizersCollector:
 
         for _ in range(len(self.optimizers_properties)):
             torch.manual_seed(start_point_random_seed)
-            self.nets.append(model_properties.model(**model_properties.model_kwargs))
+            self.nets.append(model_properties.get_model())
             self.nets[-1].zero_grad()
             self.nets[-1].train()
         torch.manual_seed(history_random_seed)
@@ -94,6 +119,7 @@ class OptimizersCollector:
         self.init_optimizer_names()
 
     def init_optimizer_names(self):
+        """Init optimizers names in self.opt_names"""
         self.opt_names = []
 
         for i in range(len(self.optimizers_properties)):
@@ -105,21 +131,30 @@ class OptimizersCollector:
             self.opt_names.append(name)
 
     def get_names_optimizers(self):
+        """Returns names of optimizers List[str]"""
         return self.opt_names
 
     def init_optimizers_objects(self):
+        """Init optimizers objects in self.opts"""
         self.opts = [i.optimizer_class(self.nets[ind].parameters(), **i.optimizer_kwargs)
                      for ind, i in enumerate(self.optimizers_properties)]
 
     def get_optimizer_objects(self):
+        """Returns optimizers objects List[torch.optim.Optimizer]"""
         return self.opts
 
     def get_nets(self):
+        """Returns models objects List[torch.nn.Module]"""
         return self.nets
 
 
 class OptimizersCollectorWithRestarts(OptimizersCollector):
     """A class for initializing optimizers and restarters for training
+    Args:
+        model_properties: ModelProperties - model properties for init
+        optimizers_properties: List[OptimizerProperties] - optimizer properties for each optimizer
+        restart_properties: List[RestartProperties] - restart properties for each restarters
+        start_point_random_seed, history_random_seed: int - random seed for Collector init
     """
 
     def __init__(self, model_properties: ModelProperties, optimizers_properties: List[OptimizerProperties],
@@ -135,4 +170,5 @@ class OptimizersCollectorWithRestarts(OptimizersCollector):
                            in zip(self.restart_properties, optimizers_properties)]
 
     def get_restarters(self):
+        """Returns restarters objects"""
         return self.restarters
