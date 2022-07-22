@@ -106,7 +106,7 @@ $$P(\text{clip})=\beta^{\alpha_{\text{auto}}^2}, \text{where}\ 0<\beta<1 \text{ 
 -----------
 <br>
 
-### Use Example  
+### Use example  
 You can use our optimizers as well as all the standard optimizers from the pytorch library  
 ```python
 from torch_clip.optimizers import  ClippedSGD
@@ -120,11 +120,12 @@ for epoch in range(EPOCHS):
         loss.backward()
         optimizer.step()
         optimizer.zero_grad()
-
 ```
 
+<br>
+<br>
 
-### use Example (with restarts)
+### Use example (with restarts)
 
 ```python
 from torch_clip.optimizers import ClippedSGD
